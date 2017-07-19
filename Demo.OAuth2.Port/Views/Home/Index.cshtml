@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Demo OAuth2 Port</h1>
+    <p class="lead"> OAuth 2.0 测试站点 之 用户入口站点</p>
+    <p class="lead"> 在此站点，系统将在授权后调用资源服务器的API</p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    
+    <div class="col-md-4">
+        <h2>登录</h2>
+        <p>点击下面的链接，将打开一个本地登录页，输入用户名和密码后，账户信息将发往授权服务器进行验证</p>
+        <p><a class="btn btn-default" href="/Logon">登录</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>业务操作页面</h2>
+        <p>点击下面的链接，将打开一个本地业务操作界面，它将访问资源服务器的WebAPI，将结果呈现在页面上。</p>
+        <p>如果用户是未授权的，点击此页面将导航到登录页。</p>
+        <p><a class="btn btn-default" href="/Home/Biz">操作</a></p>
+    </div>
+   
+</div>

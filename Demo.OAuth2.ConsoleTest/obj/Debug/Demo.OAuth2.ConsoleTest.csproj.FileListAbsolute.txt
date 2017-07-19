@@ -1,0 +1,3 @@
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.ConsoleTest\bin\Debug\Demo.OAuth2.ConsoleTest.exe.config
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.ConsoleTest\obj\Debug\Demo.OAuth2.ConsoleTest.exe
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.ConsoleTest\obj\Debug\Demo.OAuth2.ConsoleTest.pdb

@@ -1,0 +1,17 @@
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.dll.config
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.pdb
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\Newtonsoft.Json.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Net.Http.Formatting.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Web.Http.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Web.Http.WebHost.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\Newtonsoft.Json.xml
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Net.Http.Formatting.xml
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Web.Http.xml
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\System.Web.Http.WebHost.xml
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\zh-Hans\System.Net.Http.Formatting.resources.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\zh-Hans\System.Web.Http.resources.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\bin\zh-Hans\System.Web.Http.WebHost.resources.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.csprojResolveAssemblyReference.cache
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.dll
+C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.pdb

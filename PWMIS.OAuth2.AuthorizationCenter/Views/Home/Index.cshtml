@@ -1,0 +1,25 @@
+﻿<div class="jumbotron">
+    <h1>OAuth2 Authoriation Center</h1>
+    <p class="lead">PWMIS OAuth 2.0 授权服务中心</p>
+    <p><a href="http://www.pwmis.com/sqlmap" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>OAuth 2.0 授权服务中心 将为各个资源服务器的授权访问提供访问令牌生成，令牌检查，令牌刷新等服务。</p>
+        <p>在正式使用前，请配置 Web.config中的认证模式以及认证API服务地址等信息。</p>
+        <p>本程序使用 <a href="http://www.cnblogs.com/bluedoctor/p/4306131.html" target="_blank">SOD框架</a> 作为客户端标识管理程序数据访问框架。</p>
+        <p><a class="btn btn-default" href="http://www.pwmis.com/sqlmap">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-6">
+        <h2>资源服务器授权访问流程</h2>
+        <p> 1,首先，调用授权服务器，以密码模式获取访问令牌<br />
+            2,授权服务器会携带用户名和密码到认证服务器去验证用户身份<br />
+            3,验证服务器验证通过，授权服务器生成访问令牌给当前站点程序<br />
+            4,当前站点标记此用户登录成功，并将访问令牌存储在当前站点的用户会话中<br />
+            5,当前用户下次访问别的站点的WebAPI的时候，携带此访问令牌。<br />
+        </p>
+        <p><a class="btn btn-default" href="http://www.cnblogs.com/bluedoctor/">Learn more &raquo;</a></p>
+    </div>
+   
+</div>

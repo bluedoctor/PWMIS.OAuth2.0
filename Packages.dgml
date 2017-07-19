@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="PWMIS.OAuth2.Tools" Label="PWMIS.OAuth2.Tools" Category="项目" />
+    <Node Id="Microsoft.AspNet.WebApi.Client 5.2.3" Label="Microsoft.AspNet.WebApi.Client 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Core 5.2.3" Label="Microsoft.AspNet.WebApi.Core 5.2.3" Category="包" />
+    <Node Id="Newtonsoft.Json 6.0.8" Label="Newtonsoft.Json 6.0.8" Category="包" />
+    <Node Id="Demo.OAuth2.WebApi" Label="Demo.OAuth2.WebApi" Category="项目" />
+    <Node Id="Antlr 3.4.1.9004" Label="Antlr 3.4.1.9004" Category="包" />
+    <Node Id="bootstrap 3.0.0" Label="bootstrap 3.0.0" Category="包" />
+    <Node Id="jQuery 1.10.2" Label="jQuery 1.10.2" Category="包" />
+    <Node Id="Microsoft.AspNet.Cors 5.0.0" Label="Microsoft.AspNet.Cors 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Identity.Core 2.2.1" Label="Microsoft.AspNet.Identity.Core 2.2.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Identity.Owin 2.2.1" Label="Microsoft.AspNet.Identity.Owin 2.2.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc 5.0.0" Label="Microsoft.AspNet.Mvc 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Label="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor 3.0.0" Label="Microsoft.AspNet.Razor 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Label="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization 1.1.1" Label="Microsoft.AspNet.Web.Optimization 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Label="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi 5.0.0" Label="Microsoft.AspNet.WebApi 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Client 5.2.3" Label="Microsoft.AspNet.WebApi.Client 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Label="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Core 5.2.3" Label="Microsoft.AspNet.WebApi.Core 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Label="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Label="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Owin 5.2.3" Label="Microsoft.AspNet.WebApi.Owin 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.WebHost 5.0.0" Label="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Label="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages 3.0.0" Label="Microsoft.AspNet.WebPages 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Label="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.Owin 3.1.0" Label="Microsoft.Owin 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Cors 3.1.0" Label="Microsoft.Owin.Cors 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Host.SystemWeb 3.1.0" Label="Microsoft.Owin.Host.SystemWeb 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security 2.1.0" Label="Microsoft.Owin.Security 2.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security.Cookies 2.1.0" Label="Microsoft.Owin.Security.Cookies 2.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security.OAuth 2.1.0" Label="Microsoft.Owin.Security.OAuth 2.1.0" Category="包" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="包" />
+    <Node Id="Modernizr 2.6.2" Label="Modernizr 2.6.2" Category="包" />
+    <Node Id="Newtonsoft.Json 6.0.8" Label="Newtonsoft.Json 6.0.8" Category="包" />
+    <Node Id="Owin 1.0" Label="Owin 1.0" Category="包" />
+    <Node Id="Respond 1.2.0" Label="Respond 1.2.0" Category="包" />
+    <Node Id="WebGrease 1.5.2" Label="WebGrease 1.5.2" Category="包" />
+    <Node Id="Demo.OAuth2.Port" Label="Demo.OAuth2.Port" Category="项目" />
+    <Node Id="Antlr 3.4.1.9004" Label="Antlr 3.4.1.9004" Category="包" />
+    <Node Id="bootstrap 3.0.0" Label="bootstrap 3.0.0" Category="包" />
+    <Node Id="jQuery 1.10.2" Label="jQuery 1.10.2" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc 5.0.0" Label="Microsoft.AspNet.Mvc 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Label="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor 3.0.0" Label="Microsoft.AspNet.Razor 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Label="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization 1.1.1" Label="Microsoft.AspNet.Web.Optimization 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Label="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages 3.0.0" Label="Microsoft.AspNet.WebPages 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Label="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="包" />
+    <Node Id="Modernizr 2.6.2" Label="Modernizr 2.6.2" Category="包" />
+    <Node Id="Newtonsoft.Json 5.0.6" Label="Newtonsoft.Json 5.0.6" Category="包" />
+    <Node Id="Respond 1.2.0" Label="Respond 1.2.0" Category="包" />
+    <Node Id="WebGrease 1.5.2" Label="WebGrease 1.5.2" Category="包" />
+    <Node Id="PWMIS.OAuth2.AuthorizationCenter" Label="PWMIS.OAuth2.AuthorizationCenter" Category="项目" />
+    <Node Id="Antlr 3.4.1.9004" Label="Antlr 3.4.1.9004" Category="包" />
+    <Node Id="bootstrap 3.0.0" Label="bootstrap 3.0.0" Category="包" />
+    <Node Id="jQuery 1.10.2" Label="jQuery 1.10.2" Category="包" />
+    <Node Id="Microsoft.AspNet.Identity.Core 2.2.1" Label="Microsoft.AspNet.Identity.Core 2.2.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Identity.Owin 2.2.1" Label="Microsoft.AspNet.Identity.Owin 2.2.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc 5.0.0" Label="Microsoft.AspNet.Mvc 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Label="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor 3.0.0" Label="Microsoft.AspNet.Razor 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Label="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization 1.1.1" Label="Microsoft.AspNet.Web.Optimization 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Label="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi 5.0.0" Label="Microsoft.AspNet.WebApi 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Client 5.2.3" Label="Microsoft.AspNet.WebApi.Client 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Label="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Core 5.2.3" Label="Microsoft.AspNet.WebApi.Core 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Label="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Label="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.Owin 5.2.3" Label="Microsoft.AspNet.WebApi.Owin 5.2.3" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.WebHost 5.0.0" Label="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Label="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages 3.0.0" Label="Microsoft.AspNet.WebPages 3.0.0" Category="包" />
+    <Node Id="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Label="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="包" />
+    <Node Id="Microsoft.Owin 3.1.0" Label="Microsoft.Owin 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Host.SystemWeb 3.1.0" Label="Microsoft.Owin.Host.SystemWeb 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security 3.1.0" Label="Microsoft.Owin.Security 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security.Cookies 3.1.0" Label="Microsoft.Owin.Security.Cookies 3.1.0" Category="包" />
+    <Node Id="Microsoft.Owin.Security.OAuth 3.1.0" Label="Microsoft.Owin.Security.OAuth 3.1.0" Category="包" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="包" />
+    <Node Id="Modernizr 2.6.2" Label="Modernizr 2.6.2" Category="包" />
+    <Node Id="Newtonsoft.Json 6.0.8" Label="Newtonsoft.Json 6.0.8" Category="包" />
+    <Node Id="Owin 1.0" Label="Owin 1.0" Category="包" />
+    <Node Id="Respond 1.2.0" Label="Respond 1.2.0" Category="包" />
+    <Node Id="WebGrease 1.5.2" Label="WebGrease 1.5.2" Category="包" />
+  </Nodes>
+  <Links>
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Core 5.2.3" Target="Microsoft.AspNet.WebApi.Client 5.2.3" Category="程序包依赖项" />
+    <Link Source="PWMIS.OAuth2.Tools" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="安装的程序包" />
+    <Link Source="bootstrap 3.0.0" Target="jQuery 1.10.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.AspNet.Identity.Core 2.2.1" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security 2.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security.Cookies 2.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security.OAuth 2.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Target="Microsoft.AspNet.Mvc 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="WebGrease 1.5.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Target="Microsoft.AspNet.Web.Optimization 1.1.1" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Target="Microsoft.AspNet.WebApi.Client 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Core 5.2.3" Target="Microsoft.AspNet.WebApi.Client 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.Mvc 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.WebHost 5.0.0" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Cors 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Cors 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Cors 3.1.0" Target="Microsoft.AspNet.Cors 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security 2.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security 2.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.1.0" Target="Microsoft.Owin.Security 2.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.1.0" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.1.0" Target="Microsoft.Owin.Security 2.1.0" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Antlr 3.4.1.9004" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Demo.OAuth2.WebApi" Target="bootstrap 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.Identity.Owin 2.2.1" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi 5.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi.Owin 5.2.3" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.Owin.Cors 3.1.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Microsoft.Owin.Host.SystemWeb 3.1.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Modernizr 2.6.2" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.WebApi" Target="Respond 1.2.0" Category="安装的程序包" />
+    <Link Source="bootstrap 3.0.0" Target="jQuery 1.10.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Target="Microsoft.AspNet.Mvc 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="WebGrease 1.5.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Target="Microsoft.AspNet.Web.Optimization 1.1.1" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Antlr 3.4.1.9004" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Newtonsoft.Json 5.0.6" Category="程序包依赖项" />
+    <Link Source="Demo.OAuth2.Port" Target="bootstrap 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Modernizr 2.6.2" Category="安装的程序包" />
+    <Link Source="Demo.OAuth2.Port" Target="Respond 1.2.0" Category="安装的程序包" />
+    <Link Source="bootstrap 3.0.0" Target="jQuery 1.10.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.AspNet.Identity.Core 2.2.1" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security.Cookies 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 2.2.1" Target="Microsoft.Owin.Security.OAuth 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Target="Microsoft.AspNet.Mvc 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="WebGrease 1.5.2" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Target="Microsoft.AspNet.Web.Optimization 1.1.1" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.2.3" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Target="Microsoft.AspNet.WebApi.Client 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Core 5.2.3" Target="Microsoft.AspNet.WebApi.Client 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.Mvc 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.Owin 5.2.3" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.WebHost 5.0.0" Target="Microsoft.AspNet.WebApi.Core 5.2.3" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.Cookies 3.1.0" Target="Microsoft.Owin.Security 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 3.1.0" Target="Owin 1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 3.1.0" Target="Microsoft.Owin 3.1.0" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 3.1.0" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="Microsoft.Owin.Security.OAuth 3.1.0" Target="Microsoft.Owin.Security 3.1.0" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Antlr 3.4.1.9004" Category="程序包依赖项" />
+    <Link Source="WebGrease 1.5.2" Target="Newtonsoft.Json 6.0.8" Category="程序包依赖项" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="bootstrap 3.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.Identity.Owin 2.2.1" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.Mvc.zh-Hans 5.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.Razor.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.Web.Optimization.zh-Hans 1.1.1" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi 5.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi.Client.zh-Hans 5.2.3" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi.Core.zh-Hans 5.2.3" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi.HelpPage 5.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi.Owin 5.2.3" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebApi.WebHost.zh-Hans 5.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.AspNet.WebPages.zh-Hans 3.0.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Microsoft.Owin.Host.SystemWeb 3.1.0" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Modernizr 2.6.2" Category="安装的程序包" />
+    <Link Source="PWMIS.OAuth2.AuthorizationCenter" Target="Respond 1.2.0" Category="安装的程序包" />
+  </Links>
+  <Categories>
+    <Category Id="项目" />
+    <Category Id="包" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="项目" ValueLabel="True">
+      <Condition Expression="HasCategory('项目')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="程序包依赖项" ValueLabel="True">
+      <Condition Expression="HasCategory('程序包依赖项')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>

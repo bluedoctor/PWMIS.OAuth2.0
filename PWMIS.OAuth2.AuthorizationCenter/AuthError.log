@@ -1,0 +1,6 @@
+2017-7-4 17:17:59--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;An attempt to attach an auto-named database for file c:\users\dxn\documents\visual studio 2013\Projects\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB1.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
