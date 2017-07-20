@@ -27,7 +27,7 @@ namespace Demo.OAuth2.WebApi.Controllers
         // GET api/values/5
         public string Get(int id)
         {
-            return "value";
+            return "Resource Server: value="+id;
         }
 
         // POST api/values

@@ -41,19 +41,43 @@ namespace Demo.OAuth2.Port
             //可以在需要时自定义HTTP响应消息  
             //return SendError("自定义的HTTP响应消息", HttpStatusCode.OK);  
 
-            //请求处理耗时跟踪  
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            //调用内部处理接口，并获取HTTP响应消息  
-            //HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-            //篡改HTTP响应消息正文  
-            //response.Content = new StringContent(response.Content.ReadAsStringAsync().Result.Replace(@"\\", @"\"));
-            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StringContent("被拦截了，哈哈");
-            sw.Stop();
-            //记录处理耗时  
-            long exeMs = sw.ElapsedMilliseconds;
-            return response;
+            ////请求处理耗时跟踪  
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            ////调用内部处理接口，并获取HTTP响应消息  
+            ////HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+            ////篡改HTTP响应消息正文  
+            ////response.Content = new StringContent(response.Content.ReadAsStringAsync().Result.Replace(@"\\", @"\"));
+            //HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            //response.Content = new StringContent("被拦截了，哈哈");
+            //sw.Stop();
+            ////记录处理耗时  
+            //long exeMs = sw.ElapsedMilliseconds;
+
+            //proxy
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:62477/");
+            string url = request.RequestUri.PathAndQuery;
+            if (url.StartsWith("/api2/"))
+            {
+                url = url.Substring(5);
+            }
+
+            if (request.Method == HttpMethod.Get)
+            {
+                return await client.GetAsync(url);
+            }
+            else if (request.Method == HttpMethod.Post)
+            {
+
+                return await client.PostAsync(url, request.Content);
+            }
+            else
+            {
+                return SendError("代理不支持这种 Method ", HttpStatusCode.BadRequest);
+            }
+           
+          
         }
 
         /// <summary>  

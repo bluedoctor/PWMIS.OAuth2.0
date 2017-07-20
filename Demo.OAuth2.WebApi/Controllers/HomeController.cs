@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demo.OAuth2.WebApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -22,6 +23,15 @@ namespace Demo.OAuth2.WebApi.Controllers
             HttpContext.User = principal;
 
             return View();
+        }
+
+        public ActionResult GetLogonUser(int userId)
+        {
+            LogonResultModel model = new LogonResultModel();
+            model.UserId = userId;
+            model.UserName = "张三";
+            model.LogonMessage = "OK";
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
     }
 }
