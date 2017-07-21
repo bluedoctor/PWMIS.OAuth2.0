@@ -29,6 +29,24 @@ namespace Demo.OAuth2.ConsoleTest
     {
         static void Main(string[] args)
         {
+            ProxyConfig config = new ProxyConfig();
+            config.EnableRequestLog = true;
+            config.RouteMaps.Add(new ProxyRouteMap() {  
+                Prefix="/api/", 
+                Host="localhost:62477",
+                Match = ""
+            });
+
+            config.RouteMaps.Add(new ProxyRouteMap()
+            {
+                Prefix = "/api2/",
+                Host = "localhost:8018",
+                Match = "/api2/",
+                Map = "/"
+            });
+            string configStr = Newtonsoft.Json.JsonConvert.SerializeObject(config);
+            Console.WriteLine(configStr);
+            //
              DoTest();
             Console.Read();
         }

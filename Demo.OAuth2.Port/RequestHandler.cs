@@ -6,6 +6,7 @@
  */
 
 
+using PWMIS.OAuth2.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,10 +22,32 @@ using System.Web;
 namespace Demo.OAuth2.Port
 {
     /// <summary>  
-    /// HTTP消息拦截器  
+    /// HTTP代理请求消息拦截器  
     /// </summary>  
-    public class RequestHandler : DelegatingHandler
+    public class ProxyRequestHandler : DelegatingHandler
     {
+        ProxyConfig _config;
+        /// <summary>
+        /// 获取或者设置代理服务配置
+        /// </summary>
+        public ProxyConfig Config {
+            get 
+            {
+                if (_config == null)
+                {
+                   string filePath=  HttpContext.Current.Server.MapPath("/ProxyServer.config");
+                   if (!System.IO.File.Exists(filePath))
+                       throw new Exception("当前站点根目录下没有发现代理配置文件：ProxyServer.config");
+                   string configStr = System.IO.File.ReadAllText(filePath);
+                   _config = Newtonsoft.Json.JsonConvert.DeserializeObject<ProxyConfig>(configStr);
+                }
+                return _config;
+            }
+            set { _config = value; }
+        }
+
+      
+
         /// <summary>  
         /// 拦截请求  
         /// </summary>  
@@ -33,9 +57,9 @@ namespace Demo.OAuth2.Port
         protected async override Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //获取URL参数  
-            NameValueCollection query = HttpUtility.ParseQueryString(request.RequestUri.Query);
+            //NameValueCollection query = HttpUtility.ParseQueryString(request.RequestUri.Query);
             //获取Post正文数据，比如json文本  
-            string fRequesContent = request.Content.ReadAsStringAsync().Result;
+            //string fRequesContent = request.Content.ReadAsStringAsync().Result;
 
             //可以做一些其他安全验证工作，比如Token验证，签名验证。  
             //可以在需要时自定义HTTP响应消息  
@@ -54,30 +78,153 @@ namespace Demo.OAuth2.Port
             ////记录处理耗时  
             //long exeMs = sw.ElapsedMilliseconds;
 
-            //proxy
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:62477/");
+            //代理服务
+          
+
+            bool matched = false;
             string url = request.RequestUri.PathAndQuery;
-            if (url.StartsWith("/api2/"))
+            Uri baseAddress=null;
+            //处理代理规则
+            foreach (var route in this.Config.RouteMaps)
+            { 
+                if (url.StartsWith(route.Prefix))
+                {
+                    baseAddress = new Uri("http://" + route.Host + "/");
+                    if (!string.IsNullOrEmpty(route.Match))
+                    {
+                        if (route.Map == null) route.Map = "";
+                        url = url.Replace(route.Match, route.Map);
+                    }
+                    matched = true;
+                    break;
+                }
+            }
+            //未匹配到代理，返回本机请求响应结果
+            if (!matched)
             {
-                url = url.Substring(5);
+                return await base.SendAsync(request, cancellationToken);
             }
 
+            //如果缓存没有，将继续处理
+            if (request.Headers.CacheControl!=null &&
+                request.Headers.CacheControl.Public &&
+                this.Config.EnableCache && ProxyCacheProcess != null)
+            {
+                var response = ProxyCacheProcess(this,request);
+                if (response == null)
+                {
+                    response = await GetNewResponseMessage(request, url, baseAddress);
+                    SetRequestCache(url, response);
+                }
+                return response;
+            }
+
+            return await GetNewResponseMessage(request, url, baseAddress);
+        }
+
+        #region 缓存相关
+
+        /*
+         * 缓存相关资料：
+         * Http头介绍:Expires,Cache-Control,Last-Modified,ETag http://www.51testing.com/html/28/116228-238337.html
+         * 带缓存的HTTP代理服务器（五） http://blog.csdn.net/sakeven/article/details/37611967
+         * 缓存 HTTP POST请求和响应  http://www.oschina.net/question/82993_74342
+         */
+
+        /// <summary>
+        /// 代理服务器缓存处理程序，如果代理配置设置了允许使用缓存，那么将调用此方法。
+        /// 该方法将根据HttpRequestMessage 决定如何使用缓存，如果缓存已经过期，返回空响应
+        /// </summary>
+        public Func<ProxyRequestHandler, HttpRequestMessage, HttpResponseMessage> ProxyCacheProcess;
+
+        public void SetRequestCache(string url, HttpResponseMessage value)
+        {
+            throw new NotSupportedException("当前版本不支持代理缓存");
+        }
+
+        public HttpResponseMessage GetRequestCache(string url)
+        {
+            throw new NotSupportedException("当前版本不支持代理缓存");
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// 请求目标服务器，获取响应结果
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="url"></param>
+        /// <param name="baseAddress"></param>
+        /// <returns></returns>
+        private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress)
+        {
+            HttpResponseMessage result = null;
+            HttpClient client = new HttpClient();
+            Stopwatch sw = new Stopwatch();
+            client.BaseAddress = baseAddress;
+            //设置请求头，转发请求
+            foreach (var item in request.Headers)
+            {
+                client.DefaultRequestHeaders.Add(item.Key, item.Value);
+            }
+            client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
+            if (HttpContext.Current.Session["token"] != null)
+            {
+                TokenResponse ts = (TokenResponse)HttpContext.Current.Session["token"];
+                OAuthClient oc = new OAuthClient();
+                TokenResponse ts2= await oc.RefreshToken(ts);
+                HttpContext.Current.Session["token"] = ts2;
+                //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
+            }
+
+            sw.Start();
             if (request.Method == HttpMethod.Get)
             {
-                return await client.GetAsync(url);
+                result= await client.GetAsync(url);
             }
             else if (request.Method == HttpMethod.Post)
             {
-
-                return await client.PostAsync(url, request.Content);
+                result = await client.PostAsync(url, request.Content);
+            }
+            else if (request.Method == HttpMethod.Put)
+            {
+                result = await client.PutAsync(url, request.Content);
+            }
+            else if (request.Method == HttpMethod.Delete)
+            {
+                result = await client.DeleteAsync(url);
             }
             else
             {
-                return SendError("代理不支持这种 Method ", HttpStatusCode.BadRequest);
+                result = SendError("PWMIS ASP.NET Proxy 不支持这种 Method:" + request.Method.ToString(), HttpStatusCode.BadRequest);
             }
-           
-          
+            sw.Stop();
+            if (this.Config.EnableRequestLog)
+            {
+                string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
+                string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
+                string logTxt =string.Format( "Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
+                    DateTime.Now.ToShortTimeString(),
+                    request.Method.ToString(), request.RequestUri.ToString(),
+                    client.BaseAddress.ToString(), url,
+                    result.StatusCode.ToString(),
+                    sw.Elapsed.TotalMilliseconds
+                    );
+                try
+                {
+                    if (!System.IO.Directory.Exists(this.Config.LogFilePath))
+                        System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
+                    System.IO.File.AppendAllText(filePath, logTxt);
+                }
+                catch
+                { 
+                
+                }
+            }
+
+            return result;
         }
 
         /// <summary>  

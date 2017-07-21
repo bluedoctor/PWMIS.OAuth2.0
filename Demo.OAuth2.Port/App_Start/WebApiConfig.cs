@@ -11,7 +11,7 @@ namespace Demo.OAuth2.Port.App_Start
         public static void Register(HttpConfiguration config)
         {
             // Web API 配置和服务  
-            config.MessageHandlers.Add(new RequestHandler());
+            config.MessageHandlers.Add(new ProxyRequestHandler());
             // Web API 路由  
             config.MapHttpAttributeRoutes();
 

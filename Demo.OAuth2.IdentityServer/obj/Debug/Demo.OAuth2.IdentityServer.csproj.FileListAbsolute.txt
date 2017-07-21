@@ -15,3 +15,18 @@ C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.Iden
 C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.csprojResolveAssemblyReference.cache
 C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.dll
 C:\Users\dth\Documents\Visual Studio 2013\Projects\PWMIS.OAuth2\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.pdb
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.dll.config
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\Demo.OAuth2.IdentityServer.pdb
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\Newtonsoft.Json.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Net.Http.Formatting.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Web.Http.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Web.Http.WebHost.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\Newtonsoft.Json.xml
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Net.Http.Formatting.xml
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Web.Http.xml
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\System.Web.Http.WebHost.xml
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\bin\zh-Hans\System.Web.Http.WebHost.resources.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.csprojResolveAssemblyReference.cache
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.dll
+C:\Users\dxn\Source\Repos\PWMIS.OAuth2.0\Demo.OAuth2.IdentityServer\obj\Debug\Demo.OAuth2.IdentityServer.pdb
