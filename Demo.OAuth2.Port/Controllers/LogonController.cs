@@ -18,6 +18,7 @@ namespace Demo.OAuth2.Port.Controllers
         // GET: /Logon/
         public ActionResult Index()
         {
+            ViewBag.Host_AuthorizationCenter = System.Configuration.ConfigurationManager.AppSettings["Host_AuthorizationCenter"];
             return View();
         }
 
@@ -54,5 +55,19 @@ namespace Demo.OAuth2.Port.Controllers
             }
             return Json(result);
         }
-	}
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(LogonModel model)
+        {
+            return View();
+        }
+
+    }
 }

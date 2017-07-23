@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -190,6 +191,10 @@
     <Content Include="App_Data\OAuth2DB.mdf" />
     <Content Include="App_Data\OAuth2DB_log.ldf">
       <DependentUpon>OAuth2DB.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\OAuth2DB_vs2017.mdf" />
+    <Content Include="App_Data\OAuth2DB_vs2017_log.ldf">
+      <DependentUpon>OAuth2DB_vs2017.mdf</DependentUpon>
     </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />

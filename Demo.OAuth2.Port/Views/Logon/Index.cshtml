@@ -10,7 +10,7 @@
       
         $.ajax({
             type: "post",
-            url: "api/Logon",
+            url: "Logon",
             data: {
                 UserName: uid,
                 Password: pwd
@@ -42,6 +42,13 @@
             
         </div>
     </div>
+<p>
+    说明：如果登录异常，请查看日志文件：<a href="@ViewBag.Host_AuthorizationCenter/AuthError.txt">AuthError.txt</a>
+    <br />
+    如果出现下面的错误信息：<br />
+    DataBase ErrorMessage:;An attempt to attach an auto-named database for file<br />
+    如果授权服务器数据目录下没有此数据库文件，请用VS创建一个；如果有此数据库文件，可能数据库版本不对，请修改站点的Web.config文件的连接字符串设置。
+</p>
 
 
 
