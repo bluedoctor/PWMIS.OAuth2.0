@@ -4,3 +4,38 @@ SQL:GetSchema
 CommandType:Text
 Parameters:
 
+2017-07-22 21:46:40--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: SQL Network Interfaces, error: 50 - 发生了 Local Database Runtime 错误。无法创建自动实例。有关错误详细信息，请参阅 Windows 应用程序事件日志。
+)
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-07-22 21:49:33--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: SQL Network Interfaces, error: 50 - 发生了 Local Database Runtime 错误。无法创建自动实例。有关错误详细信息，请参阅 Windows 应用程序事件日志。
+)
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-07-22 21:50:15--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: SQL Network Interfaces, error: 50 - 发生了 Local Database Runtime 错误。无法创建自动实例。有关错误详细信息，请参阅 Windows 应用程序事件日志。
+)
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-07-22 21:53:18--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: SQL Network Interfaces, error: 50 - 发生了 Local Database Runtime 错误。无法创建自动实例。有关错误详细信息，请参阅 Windows 应用程序事件日志。
+)
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-07-22 21:54:53--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: SQL Network Interfaces, error: 50 - 发生了 Local Database Runtime 错误。无法创建自动实例。有关错误详细信息，请参阅 Windows 应用程序事件日志。
+)
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
