@@ -114,8 +114,29 @@ namespace PWMIS.OAuth2.Tools
             var responseValue = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                var error = await response.Content.ReadAsAsync<HttpError>();
-                this.ExceptionMessage = error.ExceptionMessage ==null? error["error_description"].ToString():error.ExceptionMessage;
+                try
+                {
+                    var error = await response.Content.ReadAsAsync<HttpError>();
+                    if (error.ExceptionMessage == null)
+                    {
+                        string errMsg = "";
+                        foreach (var item in error)
+                        {
+                            errMsg += item.Key + "," + (item.Value == null ? "" : item.Value.ToString()) + ";";
+                        }
+                        this.ExceptionMessage = "HttpError:" + errMsg;
+                    }
+                    else
+                    {
+                        this.ExceptionMessage = error.ExceptionMessage;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.ExceptionMessage = response.Content.ReadAsStringAsync().Result;
+                }
+               
+               
 
                 Console.WriteLine(response.StatusCode);
                 Console.WriteLine(this.ExceptionMessage);

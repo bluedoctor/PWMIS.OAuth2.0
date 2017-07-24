@@ -81,12 +81,25 @@ namespace Demo.OAuth2.ConsoleTest
 
             Thread.Sleep(10000);
 
-            //var tokenResponseTwo = oAuthCenterClient.GetToken("refresh_token", tokenResponse.RefreshToken).Result;
+           
             var tokenResponseTwo = oAuthCenterClient.RefreshToken().Result;
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponseTwo.AccessToken);
-            oAuthCenterClient.SetAuthorizationRequest(_httpClient, tokenResponseTwo);
-            var responseTwo = await _httpClient.GetAsync(apiUrl);
-            //Assert.Equal(HttpStatusCode.OK, responseTwo.StatusCode);
+            if (tokenResponseTwo != null)
+            {
+                oAuthCenterClient.SetAuthorizationRequest(_httpClient, tokenResponseTwo);
+                var responseTwo = await _httpClient.GetAsync(apiUrl);
+                if (responseTwo != null)
+                    Console.WriteLine("原令牌第一次刷新令牌，访问资源，结果：{0}", responseTwo.StatusCode);
+            }
+           
+            var tokenResponseThrid = oAuthCenterClient.GetToken("refresh_token", tokenResponse.RefreshToken).Result;
+            if (tokenResponseThrid != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponseThrid.AccessToken);
+                var responseThrid = await _httpClient.GetAsync(apiUrl);
+                if (responseThrid != null)
+                    Console.WriteLine("原令牌第二次刷新令牌，访问资源，结果：{0}", responseThrid.StatusCode);
+            }
+
             Console.WriteLine("刷新AccessToken 并且访问资源服务器成功.");
         }
 

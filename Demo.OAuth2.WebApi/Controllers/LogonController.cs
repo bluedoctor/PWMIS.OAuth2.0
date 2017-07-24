@@ -33,6 +33,19 @@ namespace Demo.OAuth2.WebApi.Controllers
             return result;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("api/Logon/ChangePassword")]
+        public Models.LogonResultModel ChangePassword(Demo.OAuth2.WebApi.Models.LogonModel model)
+        {
+            Demo.OAuth2.WebApi.Models.LogonResultModel result = new Models.LogonResultModel();
+            result.UserId = 1;
+            result.UserName = model.UserName;
+            result.LogonMessage = "OK";
+
+            return result;
+        }
+
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {

@@ -48,7 +48,7 @@ namespace Demo.OAuth2.Port.Controllers
             //OAuthClient oc = new OAuthClient(System.Configuration.ConfigurationManager.AppSettings["Host_AuthorizationCenter"]);
             //使用默认构造函数简化配置
             OAuthClient oc = new OAuthClient();
-            TokenResponse token = Session["token"] as TokenResponse;
+            TokenResponse token = TokenRepository.TryGetUserToken();
             if (token == null)
                 return Redirect("/Logon");
 
@@ -65,7 +65,7 @@ namespace Demo.OAuth2.Port.Controllers
 
             //使用下面一行代码，简化上面注释的代码
             var resourceClient = await oc.GetResourceClient(token);
-            Session["token"] = oc.CurrentToken;
+            TokenRepository.SetUserToken( oc.CurrentToken);
             var responseTwo = await resourceClient.GetAsync("/api/values");
             if (responseTwo.StatusCode != HttpStatusCode.OK)
             {

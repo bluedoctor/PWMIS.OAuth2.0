@@ -47,7 +47,8 @@ namespace Demo.OAuth2.Port.Controllers
                 HttpContext.User = principal;
                 */
                 FormsAuthentication.SetAuthCookie(model.UserName, false);
-                Session["token"] = tokenResponse;
+                TokenRepository.SetUserToken(tokenResponse, model.UserName);
+               
             }
             else
             {

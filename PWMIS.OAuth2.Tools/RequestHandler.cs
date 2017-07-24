@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Demo.OAuth2.Port
+namespace PWMIS.OAuth2.Tools
 {
     /// <summary>  
     /// HTTP代理请求消息拦截器  
@@ -163,18 +163,20 @@ namespace Demo.OAuth2.Port
             HttpClient client = new HttpClient();
             Stopwatch sw = new Stopwatch();
             client.BaseAddress = baseAddress;
-            //设置请求头，转发请求
+            //复制请求头，转发请求
             foreach (var item in request.Headers)
             {
                 client.DefaultRequestHeaders.Add(item.Key, item.Value);
             }
             client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
-            if (HttpContext.Current.Session["token"] != null)
+          
+            //用户登录后，可以从用户凭据获取登录名，然后从缓存获取访问令牌
+            TokenResponse ts = TokenRepository.TryGetUserToken();
+            if (ts != null)
             {
-                TokenResponse ts = (TokenResponse)HttpContext.Current.Session["token"];
                 OAuthClient oc = new OAuthClient();
                 TokenResponse ts2= await oc.RefreshToken(ts);
-                HttpContext.Current.Session["token"] = ts2;
+                TokenRepository.SetUserToken(ts2);
                 //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
             }

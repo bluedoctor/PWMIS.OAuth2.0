@@ -59,6 +59,8 @@
     <Compile Include="OAuthClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyConfig.cs" />
+    <Compile Include="RequestHandler.cs" />
+    <Compile Include="TokenRepository.cs" />
     <Compile Include="TokenResponse.cs" />
   </ItemGroup>
   <ItemGroup>
