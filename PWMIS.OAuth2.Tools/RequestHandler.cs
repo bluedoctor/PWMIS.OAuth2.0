@@ -169,7 +169,8 @@ namespace PWMIS.OAuth2.Tools
                 client.DefaultRequestHeaders.Add(item.Key, item.Value);
             }
             client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
-          
+            client.DefaultRequestHeaders.Host =  baseAddress.Host;
+
             //用户登录后，可以从用户凭据获取登录名，然后从缓存获取访问令牌
             TokenResponse ts = TokenRepository.TryGetUserToken();
             if (ts != null)
@@ -179,6 +180,27 @@ namespace PWMIS.OAuth2.Tools
                 TokenRepository.SetUserToken(ts2);
                 //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
+            }
+            if (this.Config.EnableRequestLog)
+            {
+                string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
+                string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
+                string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  ",
+                    DateTime.Now.ToLongTimeString(),
+                    request.Method.ToString(), request.RequestUri.ToString(),
+                    client.BaseAddress.ToString(), url
+                   
+                    );
+                try
+                {
+                    if (!System.IO.Directory.Exists(this.Config.LogFilePath))
+                        System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
+                    System.IO.File.AppendAllText(filePath, logTxt);
+                }
+                catch
+                {
+
+                }
             }
 
             sw.Start();
@@ -207,13 +229,19 @@ namespace PWMIS.OAuth2.Tools
             {
                 string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
                 string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
-                string logTxt =string.Format( "Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
-                    DateTime.Now.ToShortTimeString(),
+                string logTxt =string.Format( "End Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
+                    DateTime.Now.ToLongTimeString(),
                     request.Method.ToString(), request.RequestUri.ToString(),
                     client.BaseAddress.ToString(), url,
                     result.StatusCode.ToString(),
                     sw.Elapsed.TotalMilliseconds
                     );
+                if (result.StatusCode != HttpStatusCode.OK)
+                {
+                    logTxt += "\r\n Error Text:"+ result.Content.ReadAsStringAsync().Result;
+                    logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString()+"\r\n---------End Error Messages-----------";
+
+                }
                 try
                 {
                     if (!System.IO.Directory.Exists(this.Config.LogFilePath))
