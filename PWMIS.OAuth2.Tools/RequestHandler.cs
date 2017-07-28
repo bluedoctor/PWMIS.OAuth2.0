@@ -27,6 +27,7 @@ namespace PWMIS.OAuth2.Tools
     public class ProxyRequestHandler : DelegatingHandler
     {
         ProxyConfig _config;
+        private static object sync_obj = new object();
         /// <summary>
         /// 获取或者设置代理服务配置
         /// </summary>
@@ -96,7 +97,8 @@ namespace PWMIS.OAuth2.Tools
                         url = url.Replace(route.Match, route.Map);
                     }
                     matched = true;
-                    break;
+                    //break;
+                    //只要不替换前缀，还可以继续匹配并且替换剩余部分
                 }
             }
             //未匹配到代理，返回本机请求响应结果
@@ -118,7 +120,6 @@ namespace PWMIS.OAuth2.Tools
                 }
                 return response;
             }
-
             return await GetNewResponseMessage(request, url, baseAddress);
         }
 
@@ -172,11 +173,11 @@ namespace PWMIS.OAuth2.Tools
             client.DefaultRequestHeaders.Host =  baseAddress.Host;
 
             //用户登录后，可以从用户凭据获取登录名，然后从缓存获取访问令牌
-            TokenResponse ts = TokenRepository.TryGetUserToken();
+            UserTokenInfo ts = TokenRepository.TryGetUserToken();
             if (ts != null)
             {
                 OAuthClient oc = new OAuthClient();
-                TokenResponse ts2= await oc.RefreshToken(ts);
+                TokenResponse ts2= await oc.RefreshToken(ts.Token);
                 TokenRepository.SetUserToken(ts2);
                 //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
@@ -239,7 +240,7 @@ namespace PWMIS.OAuth2.Tools
                 if (result.StatusCode != HttpStatusCode.OK)
                 {
                     logTxt += "\r\n Error Text:"+ result.Content.ReadAsStringAsync().Result;
-                    logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString()+"\r\n---------End Error Messages-----------";
+                    logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------\r\n";
 
                 }
                 try

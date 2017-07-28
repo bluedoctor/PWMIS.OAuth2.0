@@ -62,6 +62,7 @@
     <Compile Include="RequestHandler.cs" />
     <Compile Include="TokenRepository.cs" />
     <Compile Include="TokenResponse.cs" />
+    <Compile Include="UserTokenInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

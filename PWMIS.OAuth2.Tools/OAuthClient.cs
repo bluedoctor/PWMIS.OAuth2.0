@@ -146,16 +146,25 @@ namespace PWMIS.OAuth2.Tools
         }
 
         /// <summary>
-        /// 刷新访问令牌
+        /// 使用当前令牌，刷新访问令牌
         /// </summary>
         /// <returns></returns>
          public async Task<TokenResponse> RefreshToken()
          {
              if (this.CurrentToken == null)
                  throw new Exception("请先调用GetToken 方法获取令牌，然后设置");
-             return await GetToken("refresh_token", this.CurrentToken.RefreshToken);
+             //如果当前令牌已经过期，再刷新
+             if (!TestToken(this.CurrentToken))
+                 return await GetToken("refresh_token", this.CurrentToken.RefreshToken);
+             else
+                 return this.CurrentToken;
          }
 
+         /// <summary>
+         /// 使用指定的令牌，刷新访问令牌
+         /// </summary>
+         /// <param name="token"></param>
+         /// <returns></returns>
          public async Task<TokenResponse> RefreshToken(TokenResponse token)
          {
              this.CurrentToken = token;
@@ -190,6 +199,20 @@ namespace PWMIS.OAuth2.Tools
              var newToken = await RefreshToken();
              SetAuthorizationRequest(ResourceServerClient, newToken);
              return ResourceServerClient;
+         }
+
+         /// <summary>
+         /// 测试令牌是否有效
+         /// </summary>
+         /// <param name="token"></param>
+         /// <returns></returns>
+         public bool TestToken(TokenResponse token)
+         { 
+           httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Basic",
+                token.AccessToken);
+            var response = httpClient.GetAsync("/api/AccessToken").Result;
+            return response.StatusCode == HttpStatusCode.OK;
          }
 
         /// <summary>
