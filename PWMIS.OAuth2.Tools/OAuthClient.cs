@@ -171,12 +171,21 @@ namespace PWMIS.OAuth2.Tools
              return await RefreshToken();
          }
 
-         /// <summary>
-         /// 使用之前的访问令牌，刷新令牌，返回一个携带新令牌的资源访问客户端对象。注意，刷新令牌，请从CurrentToken 属性获取新令牌
-         /// </summary>
-         /// <param name="token"></param>
-         /// <returns></returns>
-         public async Task<HttpClient> GetResourceClient(TokenResponse token)
+        public async Task<TokenResponse> RefreshToken(TokenResponse token,bool notest)
+        {
+            this.CurrentToken = token;
+            if (!notest)
+                return await RefreshToken();
+            else
+                return await GetToken("refresh_token", this.CurrentToken.RefreshToken);
+        }
+
+        /// <summary>
+        /// 使用之前的访问令牌，刷新令牌，返回一个携带新令牌的资源访问客户端对象。注意，刷新令牌，请从CurrentToken 属性获取新令牌
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<HttpClient> GetResourceClient(TokenResponse token)
          {
              this.CurrentToken = token;
              var newToken = await RefreshToken();
@@ -209,7 +218,7 @@ namespace PWMIS.OAuth2.Tools
          public bool TestToken(TokenResponse token)
          { 
            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                "Basic",
+                "Bearer",
                 token.AccessToken);
             var response = httpClient.GetAsync("/api/AccessToken").Result;
             return response.StatusCode == HttpStatusCode.OK;

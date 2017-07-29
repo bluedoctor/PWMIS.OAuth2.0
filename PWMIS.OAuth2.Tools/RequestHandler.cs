@@ -177,8 +177,17 @@ namespace PWMIS.OAuth2.Tools
             if (ts != null)
             {
                 OAuthClient oc = new OAuthClient();
-                TokenResponse ts2= await oc.RefreshToken(ts.Token);
-                TokenRepository.SetUserToken(ts2);
+                TokenResponse ts2 = null;
+                if (ts.UseCount <= 1 && DateTime.Now.Subtract(ts.FirstUseTime).TotalSeconds >= ts.Token.expires_in - 3)
+                {
+                    ts2 = await oc.RefreshToken(ts.Token, true);
+                }
+                else
+                {
+                    ts2 = await oc.RefreshToken(ts.Token);
+                }
+                if(ts.Token!= ts2)
+                    TokenRepository.SetUserToken(ts2);
                 //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
             }
@@ -226,6 +235,11 @@ namespace PWMIS.OAuth2.Tools
                 result = SendError("PWMIS ASP.NET Proxy 不支持这种 Method:" + request.Method.ToString(), HttpStatusCode.BadRequest);
             }
             sw.Stop();
+            if (ts != null)
+            {
+                ts.UseCount--;
+            }
+
             if (this.Config.EnableRequestLog)
             {
                 string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
