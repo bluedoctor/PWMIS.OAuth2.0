@@ -27,7 +27,7 @@ namespace PWMIS.OAuth2.Tools
             if (obj == null)
                 throw new Exception("未找到用户的访问令牌，key:"+ token_key);
             UserTokenInfo ut = (UserTokenInfo)obj;
-            ut.UseCount++;
+         
             return ut; 
         }
 
@@ -45,7 +45,7 @@ namespace PWMIS.OAuth2.Tools
             if (obj == null)
                 return null;
            UserTokenInfo ut=(UserTokenInfo)obj;
-           ut.UseCount++;
+         
            return ut; 
         }
 

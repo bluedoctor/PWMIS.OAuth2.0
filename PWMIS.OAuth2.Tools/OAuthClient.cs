@@ -109,44 +109,54 @@ namespace PWMIS.OAuth2.Tools
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 "Basic",
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(clientId + ":" + clientSecret)));
-            var cancelTokenSource = new CancellationTokenSource(10000); 
-            var response = await httpClient.PostAsync("/token", new FormUrlEncodedContent(parameters), cancelTokenSource.Token);
-            var responseValue = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
+            try
             {
-                try
+                //PostAsync 在ASP.NET下面，必须加).ConfigureAwait(false)；否则容易导致死锁
+                //详细内容，请参考 http://blog.csdn.net/ma_jiang/article/details/53887967
+                var cancelTokenSource = new CancellationTokenSource(10000);
+                var response = await  httpClient.PostAsync("/token", new FormUrlEncodedContent(parameters), cancelTokenSource.Token).ConfigureAwait(false);
+                var responseValue = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    var error = await response.Content.ReadAsAsync<HttpError>();
-                    if (error.ExceptionMessage == null)
+                    try
                     {
-                        string errMsg = "";
-                        foreach (var item in error)
+                        var error = await response.Content.ReadAsAsync<HttpError>();
+                        if (error.ExceptionMessage == null)
                         {
-                            errMsg += item.Key + "," + (item.Value == null ? "" : item.Value.ToString()) + ";";
+                            string errMsg = "";
+                            foreach (var item in error)
+                            {
+                                errMsg += item.Key + "," + (item.Value == null ? "" : item.Value.ToString()) + ";";
+                            }
+                            this.ExceptionMessage = "HttpError:" + errMsg;
                         }
-                        this.ExceptionMessage = "HttpError:" + errMsg;
+                        else
+                        {
+                            this.ExceptionMessage = error.ExceptionMessage;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        this.ExceptionMessage = error.ExceptionMessage;
+                        this.ExceptionMessage = response.Content.ReadAsStringAsync().Result;
                     }
-                }
-                catch (Exception ex)
-                {
-                    this.ExceptionMessage = response.Content.ReadAsStringAsync().Result;
-                }
-               
-               
 
-                Console.WriteLine(response.StatusCode);
-                Console.WriteLine(this.ExceptionMessage);
+
+
+                    Console.WriteLine(response.StatusCode);
+                    Console.WriteLine(this.ExceptionMessage);
+                    return null;
+                }
+                return await response.Content.ReadAsAsync<TokenResponse>();
+            }
+            catch (Exception ex)
+            {
+                this.ExceptionMessage = ex.Message;
                 return null;
             }
-            return await response.Content.ReadAsAsync<TokenResponse>();
         }
 
         /// <summary>
-        /// 使用当前令牌，刷新访问令牌
+        /// 使用当前令牌，尝试刷新访问令牌
         /// </summary>
         /// <returns></returns>
          public async Task<TokenResponse> RefreshToken()
@@ -161,14 +171,14 @@ namespace PWMIS.OAuth2.Tools
          }
 
          /// <summary>
-         /// 使用指定的令牌，刷新访问令牌
+         /// 使用指定的令牌，直接刷新访问令牌
          /// </summary>
          /// <param name="token"></param>
          /// <returns></returns>
-         public async Task<TokenResponse> RefreshToken(TokenResponse token)
+         public TokenResponse RefreshToken(TokenResponse token)
          {
              this.CurrentToken = token;
-             return await RefreshToken();
+             return  GetToken("refresh_token", token.RefreshToken).Result;
          }
 
         public async Task<TokenResponse> RefreshToken(TokenResponse token,bool notest)
@@ -177,20 +187,18 @@ namespace PWMIS.OAuth2.Tools
             if (!notest)
                 return await RefreshToken();
             else
-                return await GetToken("refresh_token", this.CurrentToken.RefreshToken);
+                return await GetToken("refresh_token", token.RefreshToken);
         }
 
         /// <summary>
-        /// 使用之前的访问令牌，刷新令牌，返回一个携带新令牌的资源访问客户端对象。注意，刷新令牌，请从CurrentToken 属性获取新令牌
+        /// 返回一个携带新令牌的资源访问客户端对象。
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<HttpClient> GetResourceClient(TokenResponse token)
+        public  HttpClient GetResourceClient(TokenResponse token)
          {
              this.CurrentToken = token;
-             var newToken = await RefreshToken();
-             SetAuthorizationRequest(this.ResourceServerClient, newToken);
-             this.CurrentToken = newToken;
+             SetAuthorizationRequest(this.ResourceServerClient, token);
              return this.ResourceServerClient;
          }
 

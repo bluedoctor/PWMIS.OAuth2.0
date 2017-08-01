@@ -33,8 +33,9 @@ namespace Demo.OAuth2.Port.Controllers
             //验证服务器验证通过，授权服务器生成访问令牌给当前站点程序
             //当前站点标记此用户登录成功，并将访问令牌存储在当前站点的用户会话中
             //当前用户下次访问别的站点的WebAPI的时候，携带此访问令牌。
-            OAuthClient oc = new OAuthClient(System.Configuration.ConfigurationManager.AppSettings["Host_AuthorizationCenter"]);
-            var tokenResponse = await oc.GetTokenOfPasswardGrantType(model.UserName, model.Password);
+           
+            TokenManager tm = new TokenManager(model.UserName);
+            var tokenResponse = await tm.CreateToken(model.Password);
             if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
                 result.UserId = 123;
@@ -47,12 +48,10 @@ namespace Demo.OAuth2.Port.Controllers
                 HttpContext.User = principal;
                 */
                 FormsAuthentication.SetAuthCookie(model.UserName, false);
-                TokenRepository.SetUserToken(tokenResponse, model.UserName);
-               
             }
             else
             {
-                result.LogonMessage = oc.ExceptionMessage;
+                result.LogonMessage = tm.TokenExctionMessage;
             }
             return Json(result);
         }

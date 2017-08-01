@@ -110,6 +110,63 @@ namespace Demo.OAuth2.ConsoleTest
             Console.WriteLine("测试完成.");
         }
 
+        public async Task OAuth_Password_Test2(string apiUrl)
+        {
+            TokenManager tm = new TokenManager("pwmis");
+            var tokenResponse =await tm.CreateToken("oath2");
+            oAuthCenterClient.CurrentToken = tokenResponse;
+            //获取 access_token 后10秒内必须使用它，否则会过期，需要刷新后取得它再访问资源服务器
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
+
+            var response = await _httpClient.GetAsync(apiUrl);//"/api/values"
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                Console.WriteLine(response.StatusCode);
+                Console.WriteLine((await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
+            }
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            //Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Console.WriteLine("10秒后测试刷新AccessToken...");
+            Thread.Sleep(10000);
+            for (int a = 0; a < 3; a++)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Task.Factory.StartNew(obj =>
+                    {
+                        int index = (int)obj;
+                        Console.WriteLine("--No.{0}----------Thread ID:{1}-", index, Thread.CurrentThread.ManagedThreadId);
+                        var tokenResponseTwo = tm.TakeToken();
+                        if (tokenResponseTwo != null)
+                        {
+                            Console.WriteLine("第{0}次刷新令牌成功。Trhead ID:{1}", index, Thread.CurrentThread.ManagedThreadId);
+                            oAuthCenterClient.CurrentToken = tokenResponseTwo;
+                            oAuthCenterClient.SetAuthorizationRequest(_httpClient, tokenResponseTwo);
+                            //var responseTwo = await _httpClient.GetAsync(apiUrl);
+                            var responseTwo = _httpClient.GetAsync(apiUrl).Result;
+                            if (responseTwo != null)
+                                Console.WriteLine("第{0}次刷新令牌，访问资源，结果：{1},Trhead ID:{2}", index, responseTwo.StatusCode, Thread.CurrentThread.ManagedThreadId);
+                            else
+                                Console.WriteLine("第{0}次刷新令牌，访问资源失败。。。。。", index);
+                        }
+                        else
+                        {
+                            Console.WriteLine("********第{0}次*获取令牌失败**************", index);
+                        }
+
+                        tm.Dispose();
+                    }, (object)i);
+
+                    
+                }
+                Console.WriteLine("5 秒后进行下次测试--------------------");
+                Thread.Sleep(5000);
+            }
+                
+
+            Console.WriteLine("测试完成.");
+        }
+
 
         public async Task OAuth_AuthorizationCode_Test()
         {

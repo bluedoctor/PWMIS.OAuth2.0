@@ -14,6 +14,16 @@ Install-Package Microsoft.Owin.Cors
  * 
  * WebAPI跨域访问的资料：
  * http://www.cnblogs.com/landeanfen/p/5177176.html
+ * 
+ * SQL LocalDB 无法登录问题
+ * 请使用下面命令：
+ * sqllocaldb i v11.0
+ * 查看到命名管道实例，
+ * 然后，用SSMS 连接上管道实例后，执行下面类似的语句：
+ * create login [IIS APPPOOL\ASP.NET v4.0] from windows;
+   exec sp_addsrvrolemember N'IIS APPPOOL\ASP.NET v4.0', sysadmin 
+ * 详细请参考：http://www.cnblogs.com/xwgli/p/3435282.html
+ * 
  */
 
 using PWMIS.OAuth2.Tools;
@@ -76,7 +86,7 @@ namespace Demo.OAuth2.ConsoleTest
             Console.WriteLine("测试 OAuth2 密码模式");
             string apiUrl = "/api/values";
             //string apiUrl = "/Account/TestAuthrization";
-            await test.OAuth_Password_Test(apiUrl);
+            await test.OAuth_Password_Test2(apiUrl);
             Console.WriteLine("-----测试全部完成-----------------");
         }
     }

@@ -162,7 +162,7 @@ namespace PWMIS.OAuth2.Tools
         {
             HttpResponseMessage result = null;
             HttpClient client = new HttpClient();
-            Stopwatch sw = new Stopwatch();
+           
             client.BaseAddress = baseAddress;
             //复制请求头，转发请求
             foreach (var item in request.Headers)
@@ -172,51 +172,60 @@ namespace PWMIS.OAuth2.Tools
             client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
             client.DefaultRequestHeaders.Host =  baseAddress.Host;
 
-            //用户登录后，可以从用户凭据获取登录名，然后从缓存获取访问令牌
-            UserTokenInfo ts = TokenRepository.TryGetUserToken();
-            if (ts != null)
+            var identity = HttpContext.Current.User.Identity;
+            if (identity == null || identity.IsAuthenticated == false)
             {
-                OAuthClient oc = new OAuthClient();
-                TokenResponse ts2 = null;
-                if (ts.UseCount <= 1 && DateTime.Now.Subtract(ts.FirstUseTime).TotalSeconds >= ts.Token.expires_in - 3)
+                return await ProxyReuqest(request, url, result, client);
+            }
+
+            using (TokenManager tm = new TokenManager(identity.Name))
+            {
+                TokenResponse token = tm.TakeToken();
+                if (token == null)
                 {
-                    ts2 = await oc.RefreshToken(ts.Token, true);
+                    if (this.Config.EnableRequestLog)
+                    {
+                        string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Old-Token:{5}\r\n  Statue:{6} \r\n",
+                            DateTime.Now.ToLongTimeString(),
+                            request.Method.ToString(), request.RequestUri.ToString(),
+                            client.BaseAddress.ToString(), url,
+                            tm.OldToken.AccessToken,
+                            "BadRequest"
+                            );
+
+                        WriteLogFile(logTxt);
+                    }
+                    return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.BadRequest);
                 }
                 else
                 {
-                    ts2 = await oc.RefreshToken(ts.Token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                    return await ProxyReuqest(request, url, result, client);
                 }
-                if(ts.Token!= ts2)
-                    TokenRepository.SetUserToken(ts2);
-                //有可能另外一个线程刷新了token，可能导致资源服务器验证token失败
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ts2.AccessToken);
             }
+            
+        }
+
+        private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpResponseMessage result, HttpClient client)
+        {
             if (this.Config.EnableRequestLog)
             {
-                string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
-                string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
-                string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  ",
+                string token = client.DefaultRequestHeaders.Authorization == null ? "" : client.DefaultRequestHeaders.Authorization.ToString();
+                string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Token:{5}\r\n  ",
                     DateTime.Now.ToLongTimeString(),
                     request.Method.ToString(), request.RequestUri.ToString(),
-                    client.BaseAddress.ToString(), url
-                   
+                    client.BaseAddress.ToString(), url,
+                    token
                     );
-                try
-                {
-                    if (!System.IO.Directory.Exists(this.Config.LogFilePath))
-                        System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
-                    System.IO.File.AppendAllText(filePath, logTxt);
-                }
-                catch
-                {
 
-                }
+                WriteLogFile(logTxt);
             }
 
+            Stopwatch sw = new Stopwatch();
             sw.Start();
             if (request.Method == HttpMethod.Get)
             {
-                result= await client.GetAsync(url);
+                result = await client.GetAsync(url);
             }
             else if (request.Method == HttpMethod.Post)
             {
@@ -235,16 +244,12 @@ namespace PWMIS.OAuth2.Tools
                 result = SendError("PWMIS ASP.NET Proxy 不支持这种 Method:" + request.Method.ToString(), HttpStatusCode.BadRequest);
             }
             sw.Stop();
-            if (ts != null)
-            {
-                ts.UseCount--;
-            }
+
 
             if (this.Config.EnableRequestLog)
             {
-                string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
-                string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
-                string logTxt =string.Format( "End Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
+              
+                string logTxt = string.Format("End Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
                     DateTime.Now.ToLongTimeString(),
                     request.Method.ToString(), request.RequestUri.ToString(),
                     client.BaseAddress.ToString(), url,
@@ -253,23 +258,30 @@ namespace PWMIS.OAuth2.Tools
                     );
                 if (result.StatusCode != HttpStatusCode.OK)
                 {
-                    logTxt += "\r\n Error Text:"+ result.Content.ReadAsStringAsync().Result;
+                    logTxt += "\r\n Error Text:" + result.Content.ReadAsStringAsync().Result;
                     logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------\r\n";
 
                 }
-                try
-                {
-                    if (!System.IO.Directory.Exists(this.Config.LogFilePath))
-                        System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
-                    System.IO.File.AppendAllText(filePath, logTxt);
-                }
-                catch
-                { 
-                
-                }
-            }
 
+                WriteLogFile(logTxt);
+            }
             return result;
+        }
+
+        private void WriteLogFile(string logTxt)
+        {
+            string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
+            string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
+            try
+            {
+                if (!System.IO.Directory.Exists(this.Config.LogFilePath))
+                    System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
+                System.IO.File.AppendAllText(filePath, logTxt);
+            }
+            catch
+            {
+
+            }
         }
 
         /// <summary>  
