@@ -26,6 +26,19 @@ namespace Demo.OAuth2.Port.App_Start
                 routeTemplate: "api2/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
               );
+             //可以将MVC的URL映射为WebAPI的
+            /*
+             config.Routes.MapHttpRoute(
+                name: "Form",
+                routeTemplate: "Form/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+              );
+             config.Routes.MapHttpRoute(
+               name: "Project",
+               routeTemplate: "Project/{action}/{id}",
+               defaults: new { id = RouteParameter.Optional }
+             );
+             */ 
         }  
     }
 }

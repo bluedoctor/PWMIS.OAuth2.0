@@ -42,7 +42,7 @@ namespace PWMIS.OAuth2.Tools
             if (tokenRsp != null)
             {
                 UserTokenInfo uti = new UserTokenInfo(this.UserName, tokenRsp);
-                dictUserToken.Add(this.UserName, uti);
+                dictUserToken[this.UserName]= uti;
             }
             return tokenRsp;
         }
