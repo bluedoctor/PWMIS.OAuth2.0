@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.OAuth2.ConsoleTest", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.OAuth2.IdentityServer", "Demo.OAuth2.IdentityServer\Demo.OAuth2.IdentityServer.csproj", "{4492209D-B35D-4128-A54D-D4C09DC6B772}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.OAuth2.WinFormTest", "Demo.OAuth2.WinFormTest\Demo.OAuth2.WinFormTest.csproj", "{CC7B9BB5-A89E-4EB8-BE24-CF7336F88399}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{4492209D-B35D-4128-A54D-D4C09DC6B772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4492209D-B35D-4128-A54D-D4C09DC6B772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4492209D-B35D-4128-A54D-D4C09DC6B772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC7B9BB5-A89E-4EB8-BE24-CF7336F88399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC7B9BB5-A89E-4EB8-BE24-CF7336F88399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC7B9BB5-A89E-4EB8-BE24-CF7336F88399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC7B9BB5-A89E-4EB8-BE24-CF7336F88399}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

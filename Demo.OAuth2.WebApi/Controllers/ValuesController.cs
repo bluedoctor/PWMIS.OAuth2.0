@@ -21,7 +21,8 @@ namespace Demo.OAuth2.WebApi.Controllers
 
             return new string[] { "Resource Server:",this.User.Identity.Name, 
                 this.User.Identity.IsAuthenticated.ToString(), 
-                this.User.Identity.AuthenticationType };
+                this.User.Identity.AuthenticationType,
+                DateTime.Now.ToLongTimeString()};
         }
 
         // GET api/values/5

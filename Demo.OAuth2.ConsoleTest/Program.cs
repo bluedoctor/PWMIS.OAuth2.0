@@ -80,7 +80,7 @@ namespace Demo.OAuth2.ConsoleTest
             //Console.WriteLine("测试 OAuth2 客户端模式");
             Console.WriteLine("按任意键开始测试");
             Console.ReadLine();
-            //await test.OAuth_ClientCredentials_Test();
+            await test.OAuth_ClientCredentials_Test();
 
             Console.WriteLine();
             Console.WriteLine("测试 OAuth2 密码模式");
