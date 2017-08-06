@@ -124,9 +124,16 @@ namespace Demo.OAuth2.WinFormTest
 
         }
 
-        private void txtOpenIE_Click(object sender, EventArgs e)
+        private async void txtOpenIE_Click(object sender, EventArgs e)
         {
-            Process.Start(this.txtUrl.Text);
+            string token = await this.client.GetStringAsync("/Logon/GetUserToken");
+            Uri uri = new Uri(this.txtUrl.Text);
+            string targetUrl = string.Format("http://{0}/Logon/ValidateUserToken?userName={1}&token={2}&redirUrl={3}",
+                uri.Authority,
+                this.txtUseName.Text,
+                token,
+                Uri.EscapeUriString( uri.PathAndQuery));
+            Process.Start(targetUrl);
         }
     }
 }

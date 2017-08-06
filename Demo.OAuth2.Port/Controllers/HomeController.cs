@@ -33,9 +33,9 @@ namespace Demo.OAuth2.Port.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Contact(string who="")
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Welcom "+who+",Your contact page.";
 
             return View();
         }

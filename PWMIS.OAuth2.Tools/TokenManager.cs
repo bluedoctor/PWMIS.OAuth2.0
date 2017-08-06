@@ -108,6 +108,16 @@ namespace PWMIS.OAuth2.Tools
             }
         }
 
+        public bool ValidateToken(string token)
+        {
+            if (dictUserToken.ContainsKey(this.UserName))
+            {
+                var userToken = dictUserToken[this.UserName];
+                return userToken.Token.AccessToken == token;
+            }
+            return false;
+        }
+
         public void Dispose()
         {
             if (this.CurrentUserTokenInfo != null)

@@ -69,5 +69,29 @@ namespace Demo.OAuth2.Port.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult ValidateUserToken(string userName, string token, string redirUrl = "")
+        {
+            TokenManager tm = new TokenManager(userName);
+            bool result = tm.ValidateToken(token);
+            if (result)
+            {
+                FormsAuthentication.SetAuthCookie(userName, false);
+                if (!string.IsNullOrEmpty(redirUrl))
+                    return Redirect(redirUrl);
+                else
+                    return Content("OK");
+            }
+            return Content("Faile");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult GetUserToken()
+        {
+            TokenManager tm = new TokenManager(User.Identity.Name );
+            var token = tm.TakeToken();
+            return Content(token.AccessToken);
+        }
     }
 }
