@@ -18,7 +18,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             {
                 AllowInsecureHttp = true,
                 AuthenticationMode = AuthenticationMode.Active,
-                TokenEndpointPath = new PathString("/token"), //获取 access_token 授权服务请求地址
+                TokenEndpointPath = new PathString("/api/token"), //获取 access_token 授权服务请求地址
                 AuthorizeEndpointPath = new PathString("/authorize"), //获取 authorization_code 授权服务请求地址
                 AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(10), //access_token 过期时间
 

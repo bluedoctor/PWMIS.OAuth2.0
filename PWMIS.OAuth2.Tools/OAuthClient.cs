@@ -115,7 +115,7 @@ namespace PWMIS.OAuth2.Tools
                 //PostAsync 在ASP.NET下面，必须加).ConfigureAwait(false)；否则容易导致死锁
                 //详细内容，请参考 http://blog.csdn.net/ma_jiang/article/details/53887967
                 var cancelTokenSource = new CancellationTokenSource(10000);
-                var response = await  httpClient.PostAsync("/token", new FormUrlEncodedContent(parameters), cancelTokenSource.Token).ConfigureAwait(false);
+                var response = await httpClient.PostAsync("/api/token", new FormUrlEncodedContent(parameters), cancelTokenSource.Token).ConfigureAwait(false);
                 var responseValue = await response.Content.ReadAsStringAsync();
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -288,7 +288,7 @@ namespace PWMIS.OAuth2.Tools
                 parameters.Add("password", password);
             }
 
-            var response = await client.PostAsync("/logon", new FormUrlEncodedContent(parameters));
+            var response = await client.PostAsync("/Logon", new FormUrlEncodedContent(parameters));
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsAsync<LogonResultModel>();

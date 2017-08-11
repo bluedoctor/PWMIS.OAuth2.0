@@ -175,17 +175,7 @@ namespace PWMIS.OAuth2.Tools
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
             {
-                if (string.IsNullOrEmpty(this.Config.OAuthRedirUrl))
-                {
-                    return await ProxyReuqest(request, url, result, client);
-                }
-                else
-                {
-                    //如果未登录，禁止访问API，跳转到相应的页面
-                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Redirect);
-                    response.Headers.Location = new Uri(this.Config.OAuthRedirUrl);
-                    return response;
-                }
+                return await ProxyReuqest(request, url, result, client);
             }
 
             using (TokenManager tm = new TokenManager(identity.Name))
@@ -275,7 +265,26 @@ namespace PWMIS.OAuth2.Tools
 
                 WriteLogFile(logTxt);
             }
-            return result;
+
+            //
+            if (string.IsNullOrEmpty(this.Config.OAuthRedirUrl))
+            {
+                return result;
+            }
+            else
+            {
+                if (result.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    //如果未登录，禁止访问API，跳转到相应的页面
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Redirect);
+                    response.Headers.Location = new Uri(this.Config.OAuthRedirUrl);
+                    return response;
+                }
+                else
+                {
+                    return result;
+                }
+            }
         }
 
         private void WriteLogFile(string logTxt)
