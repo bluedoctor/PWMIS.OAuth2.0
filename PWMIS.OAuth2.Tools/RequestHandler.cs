@@ -175,7 +175,17 @@ namespace PWMIS.OAuth2.Tools
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
             {
-                return await ProxyReuqest(request, url, result, client);
+                if (string.IsNullOrEmpty(this.Config.OAuthRedirUrl))
+                {
+                    return await ProxyReuqest(request, url, result, client);
+                }
+                else
+                {
+                    //如果未登录，禁止访问API，跳转到相应的页面
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Redirect);
+                    response.Headers.Location = new Uri(this.Config.OAuthRedirUrl);
+                    return response;
+                }
             }
 
             using (TokenManager tm = new TokenManager(identity.Name))

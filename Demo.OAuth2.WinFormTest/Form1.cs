@@ -29,33 +29,15 @@ namespace Demo.OAuth2.WinFormTest
         {
             string userName = this.txtUseName.Text.Trim();
             string password = this.txtPassword.Text;
-            if (string.IsNullOrEmpty(userName))
-            {
-                MessageBox.Show("用户名不能为空！");
-                return;
-            }
-
            
-            var parameters = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
-            {
-                parameters.Add("username", userName);
-                parameters.Add("password", password);
-            }
-
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            //  "Basic",
-            //  Convert.ToBase64String(Encoding.ASCII.GetBytes(clientId + ":" + clientSecret)));
             try
             {
-                var response = await client.PostAsync("/logon", new FormUrlEncodedContent(parameters));
-                if (response.IsSuccessStatusCode)
+                await oAuthCenterClient.WebLogin(userName, password, result =>
                 {
-                    var result = await response.Content.ReadAsAsync<LogonResultModel>();
                     if (result.LogonMessage == "OK")
                     {
                         MessageBox.Show("登录成功！");
-                        this.txtUrl.Text =  System.Configuration.ConfigurationManager.AppSettings["Host_Webapi"]+"/api/values";
+                        this.txtUrl.Text = this.oAuthCenterClient.ResourceServerClient.BaseAddress.ToString() + "api/values";
                         btnGo.Enabled = true;
                         //有关 cookie，可以参考：
                         // string[] strCookies = (string[])response.Headers.GetValues("Set-Cookie");
@@ -67,14 +49,16 @@ namespace Demo.OAuth2.WinFormTest
                         MessageBox.Show(result.LogonMessage);
                         btnGo.Enabled = false;
                     }
-                }
+                });
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            
         }
+
+     
 
         private async void btnGo_Click(object sender, EventArgs e)
         {
@@ -102,8 +86,16 @@ namespace Demo.OAuth2.WinFormTest
             var response = await client.GetAsync(this.txtUrl.Text);
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                string errMsg = string.Format("HTTP响应码：{0}，错误信息：{1}", response.StatusCode, (await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
-                MessageBox.Show(errMsg);
+                try
+                {
+                    string errMsg = string.Format("HTTP响应码：{0}，错误信息：{1}", response.StatusCode, (await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
+                    MessageBox.Show(errMsg);
+                }
+                catch
+                {
+                    MessageBox.Show(response.StatusCode.ToString());
+                }
+
             }
             else
             {
@@ -114,26 +106,18 @@ namespace Demo.OAuth2.WinFormTest
         private void Form1_Load(object sender, EventArgs e)
         {
             this.btnGo.Enabled = false;
-            string url = System.Configuration.ConfigurationManager.AppSettings["Host_Webapi"];
-            client = new HttpClient();
-            client.BaseAddress = new Uri(url);
+            this.oAuthCenterClient = new OAuthClient();
+            this.client = oAuthCenterClient.ResourceServerClient;
+            this.txtUrl.Text = this.client.BaseAddress.ToString();
 
-            oAuthCenterClient = new OAuthClient();
-            this.txtUrl.Text = url;
-           
 
         }
 
         private async void txtOpenIE_Click(object sender, EventArgs e)
         {
-            string token = await this.client.GetStringAsync("/Logon/GetUserToken");
-            Uri uri = new Uri(this.txtUrl.Text);
-            string targetUrl = string.Format("http://{0}/Logon/ValidateUserToken?userName={1}&token={2}&redirUrl={3}",
-                uri.Authority,
-                this.txtUseName.Text,
-                token,
-                Uri.EscapeUriString( uri.PathAndQuery));
-            Process.Start(targetUrl);
+            await oAuthCenterClient.OpenUrlByBrowser(this.txtUseName.Text, this.txtUrl.Text);
         }
+
+       
     }
 }
