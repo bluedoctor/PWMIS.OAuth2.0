@@ -439,3 +439,88 @@ SQL:GetSchema
 CommandType:Text
 Parameters:
 
+2017-8-7 8:57:28--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Cannot open database "F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF" requested by the login. The login failed.
+Login failed for user 'DXN-DTH-PC\dxn'.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 8:58:25--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Cannot open database "F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF" requested by the login. The login failed.
+Login failed for user 'DXN-DTH-PC\dxn'.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:37:05--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:52:04--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+Cannot create file 'F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf' because it already exists. Change the file path or the file name, and retry the operation.
+Could not open new database 'F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF'. CREATE DATABASE is aborted.
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+File activation failure. The physical file name "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf" may be incorrect.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:52:19--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+Cannot create file 'F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf' because it already exists. Change the file path or the file name, and retry the operation.
+Could not open new database 'F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF'. CREATE DATABASE is aborted.
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+File activation failure. The physical file name "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf" may be incorrect.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:52:57--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+Cannot create file 'F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf' because it already exists. Change the file path or the file name, and retry the operation.
+Could not open new database 'F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF'. CREATE DATABASE is aborted.
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+File activation failure. The physical file name "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf" may be incorrect.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:54:36--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+Cannot create file 'F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf' because it already exists. Change the file path or the file name, and retry the operation.
+Could not open new database 'F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF'. CREATE DATABASE is aborted.
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+File activation failure. The physical file name "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf" may be incorrect.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-7 10:55:29--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Unable to open the physical file "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf". Operating system error 32: "32(另一个程序正在使用此文件，进程无法访问。)".
+Cannot create file 'F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf' because it already exists. Change the file path or the file name, and retry the operation.
+Could not open new database 'F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF'. CREATE DATABASE is aborted.
+An attempt to attach an auto-named database for file F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+File activation failure. The physical file name "F:\Git\PWMIS.OAuth2\PWMIS.OAuth2.AuthorizationCenter\App_Data\OAuth2DB_log.ldf" may be incorrect.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-8 15:13:29--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Cannot open database "F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF" requested by the login. The login failed.
+Login failed for user 'DXN-DTH-PC\dxn'.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+
+2017-8-8 15:13:30--identity_repository_error:PDF.NET AdoHelper Query Error：
+DataBase ErrorMessage:;Cannot open database "F:\GIT\PWMIS.OAUTH2\PWMIS.OAUTH2.AUTHORIZATIONCENTER\APP_DATA\OAUTH2DB.MDF" requested by the login. The login failed.
+Login failed for user 'DXN-DTH-PC\dxn'.
+SQL:GetSchema 
+CommandType:Text
+Parameters:
+

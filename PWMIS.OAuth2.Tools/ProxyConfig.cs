@@ -39,6 +39,10 @@ namespace PWMIS.OAuth2.Tools
         /// 代理服务器名字
         /// </summary>
         public string ServerName { get; set; }
+        /// <summary>
+        /// 在使用OAuth 2.0授权服务的时候，如果用户没有登录就调用资源服务器，指示客户端跳转的URL地址。如果未设置此属性，会继续调用资源服务器。
+        /// </summary>
+        public string OAuthRedirUrl { get; set; }
 
     }
 

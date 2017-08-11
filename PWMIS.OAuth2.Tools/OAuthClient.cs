@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -257,6 +258,55 @@ namespace PWMIS.OAuth2.Tools
         public void SetAuthorizationRequest(HttpClient httpClient,TokenResponse token)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+        }
+
+        public async Task OpenUrlByBrowser(string userName, string url)
+        {
+            HttpClient client = this.ResourceServerClient;
+            string token = await client.GetStringAsync("/Logon/GetUserToken");
+            Uri uri = new Uri(url);
+            string targetUrl = string.Format("http://{0}/Logon/ValidateUserToken?userName={1}&token={2}&redirUrl={3}",
+                uri.Authority,
+                userName,
+                token,
+                Uri.EscapeUriString(uri.PathAndQuery));
+            Process.Start(targetUrl);
+        }
+
+        public async Task<HttpStatusCode> WebLogin(string userName, string password, Action<LogonResultModel> logonResult)
+        {
+            HttpClient client = this.ResourceServerClient;
+            if (string.IsNullOrEmpty(userName))
+            {
+                throw new ArgumentNullException("用户名不能为空！");
+            }
+
+            var parameters = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
+            {
+                parameters.Add("username", userName);
+                parameters.Add("password", password);
+            }
+
+            var response = await client.PostAsync("/logon", new FormUrlEncodedContent(parameters));
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsAsync<LogonResultModel>();
+                //if (result.LogonMessage == "OK")
+                //{
+                //    MessageBox.Show("登录成功！");
+                //    //有关 cookie，可以参考：
+                //    // string[] strCookies = (string[])response.Headers.GetValues("Set-Cookie");
+                //    // http://www.cnblogs.com/leeairw/p/3754913.html
+                //    // http://www.cnblogs.com/sjns/p/5331723.html
+                //}
+                //else
+                //{
+                //    MessageBox.Show(result.LogonMessage);
+                //}
+                logonResult(result);
+            }
+            return response.StatusCode;
         }
        
     }
