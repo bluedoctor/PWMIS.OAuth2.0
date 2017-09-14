@@ -73,8 +73,8 @@ namespace Demo.OAuth2.Port.Controllers
         public ActionResult ValidateUserToken(string userName, string token, string redirUrl = "")
         {
             TokenManager tm = new TokenManager(userName);
-            bool result = tm.ValidateToken(token);
-            if (result)
+            string result = tm.ValidateToken(token);
+            if (result=="OK")
             {
                 FormsAuthentication.SetAuthCookie(userName, false);
                 if (!string.IsNullOrEmpty(redirUrl))
@@ -82,7 +82,7 @@ namespace Demo.OAuth2.Port.Controllers
                 else
                     return Content("OK");
             }
-            return Content("Faile");
+            return Content(result);
         }
 
         [HttpGet]

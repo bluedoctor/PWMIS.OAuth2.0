@@ -112,14 +112,14 @@ namespace PWMIS.OAuth2.Tools
             }
         }
 
-        public bool ValidateToken(string token)
+        public string ValidateToken(string token)
         {
             if (dictUserToken.ContainsKey(this.UserName))
             {
                 var userToken = dictUserToken[this.UserName];
-                return userToken.Token.AccessToken == token;
+                return userToken.Token.AccessToken == token ?"OK":"TokenNotEqual";
             }
-            return false;
+            return "NotExists";
         }
 
         public void Dispose()

@@ -269,7 +269,7 @@ namespace PWMIS.OAuth2.Tools
                 uri.Authority,
                 userName,
                 token,
-                Uri.EscapeUriString(uri.PathAndQuery));
+                Uri.EscapeUriString(uri.PathAndQuery + uri.Fragment));
             Process.Start(targetUrl);
         }
 
