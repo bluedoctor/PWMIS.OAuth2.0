@@ -110,6 +110,7 @@ namespace PWMIS.OAuth2.Tools
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 "Basic",
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(clientId + ":" + clientSecret)));
+            string errCode = "00";
             try
             {
                 //PostAsync 在ASP.NET下面，必须加).ConfigureAwait(false)；否则容易导致死锁
@@ -135,16 +136,28 @@ namespace PWMIS.OAuth2.Tools
                         {
                             this.ExceptionMessage = error.ExceptionMessage;
                         }
+                        errCode = "1000";
+                    }
+                    catch (AggregateException agex)
+                    {
+                        string errMsg = "";
+                        foreach (var ex in agex.InnerExceptions)
+                        {
+                            errMsg += ex.Message;
+                        }
+                      
+                        errCode = "1001";
+                        this.ExceptionMessage = errMsg;
                     }
                     catch (Exception ex)
                     {
                         this.ExceptionMessage = response.Content.ReadAsStringAsync().Result;
+                        errCode = "1002";
+                        WriteErrorLog(errCode, ex.Message);
                     }
 
-
-
-                    Console.WriteLine(response.StatusCode);
-                    Console.WriteLine(this.ExceptionMessage);
+                    WriteErrorLog(errCode, "StatusCode:" + response.StatusCode + "\r\n" + this.ExceptionMessage);
+                    this.ExceptionMessage = "ErrCode:" + errCode+ ",ErrMsg:'"+ this.ExceptionMessage+"'";
                     return null;
                 }
                 return await response.Content.ReadAsAsync<TokenResponse>();
@@ -152,6 +165,9 @@ namespace PWMIS.OAuth2.Tools
             catch (Exception ex)
             {
                 this.ExceptionMessage = ex.Message;
+                errCode = "1004";
+                WriteErrorLog(errCode,  this.ExceptionMessage);
+                this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
                 return null;
             }
         }
@@ -307,6 +323,24 @@ namespace PWMIS.OAuth2.Tools
                 logonResult(result);
             }
             return response.StatusCode;
+        }
+
+        /// <summary>
+        /// 写入异常日志文件
+        /// </summary>
+        /// <param name="errCode">错误代码</param>
+        /// <param name="logText"></param>
+        public static void WriteErrorLog(string errCode, string logText)
+        {
+            string filePath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, "ProxyErrorLog.txt");
+            try
+            {
+                System.IO.File.AppendAllText(filePath,DateTime.Now.ToString()+" ErrorCode:"+ errCode +" ,ErrorMsg:" +logText);
+            }
+            catch
+            {
+
+            }
         }
        
     }

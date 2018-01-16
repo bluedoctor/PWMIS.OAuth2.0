@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    说明：如果系统无法登录，请测试【认证服务器】接口是否正常，认证服务器接口地址示例：，<br />
+    http://localhost:8004/Account/ValidLogin
+    <br />
+    <h3>注意：由于系统采用了API代理，认证服务器可能在内网，请在内网进行此页面的测试！</h3>
+    <form method="post" action="http://localhost:8004/Account/ValidLogin">
+        <div class="col-sm-9 col-md-9">
+            <div class="form-group">
+                用户名：<input type="text" name="UserName" id="uid" />
+            </div>
+            <div class="form-group">
+                密码：<input type="password" name="Password" id="pwd" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="登录"  /><br />
+
+            </div>
+        </div>
+    </form>
+</body>
+</html>

@@ -154,3 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/Demo.OAuth2.Port/ProxyErrorLog.txt
+/.vs/PWMIS.OAuth2/v15/Server/sqlite3
