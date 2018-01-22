@@ -145,7 +145,7 @@ namespace PWMIS.OAuth2.Tools
                         {
                             errMsg += ex.Message;
                         }
-                      
+
                         errCode = "1001";
                         this.ExceptionMessage = errMsg;
                     }
@@ -157,16 +157,30 @@ namespace PWMIS.OAuth2.Tools
                     }
 
                     WriteErrorLog(errCode, "StatusCode:" + response.StatusCode + "\r\n" + this.ExceptionMessage);
-                    this.ExceptionMessage = "ErrCode:" + errCode+ ",ErrMsg:'"+ this.ExceptionMessage+"'";
+                    this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
                     return null;
                 }
                 return await response.Content.ReadAsAsync<TokenResponse>();
+            }
+            catch (AggregateException agex)
+            {
+                string errMsg = "";
+                foreach (var ex in agex.InnerExceptions)
+                {
+                    errMsg += ex.Message;
+                }
+
+                errCode = "1003";
+                this.ExceptionMessage = errMsg;
+                WriteErrorLog(errCode, errMsg);
+                this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
+                return null;
             }
             catch (Exception ex)
             {
                 this.ExceptionMessage = ex.Message;
                 errCode = "1004";
-                WriteErrorLog(errCode,  this.ExceptionMessage);
+                WriteErrorLog(errCode, this.ExceptionMessage);
                 this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
                 return null;
             }
@@ -335,7 +349,8 @@ namespace PWMIS.OAuth2.Tools
             string filePath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, "ProxyErrorLog.txt");
             try
             {
-                System.IO.File.AppendAllText(filePath,DateTime.Now.ToString()+" ErrorCode:"+ errCode +" ,ErrorMsg:" +logText);
+                string text = string.Format("{0} ErrorCode:{1} ErrorMsg:{2}\r\n", DateTime.Now.ToString(), errCode, logText);
+                System.IO.File.AppendAllText(filePath, text);
             }
             catch
             {

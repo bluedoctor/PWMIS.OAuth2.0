@@ -54,29 +54,30 @@ namespace Demo.OAuth2.Port.Controllers
                 userToken = tm.TakeToken();
                 if (userToken == null)
                     return Redirect("/Logon");
-            }
+           
             
 
-            //oc.CurrentToken = token;
-            //var newToken = await oc.RefreshToken();
+                //oc.CurrentToken = token;
+                //var newToken = await oc.RefreshToken();
 
 
-            //string host_Webapi = System.Configuration.ConfigurationManager.AppSettings["Host_Webapi"];
-            //HttpClient client = new HttpClient();
-            //client.BaseAddress = new Uri(host_Webapi);
+                //string host_Webapi = System.Configuration.ConfigurationManager.AppSettings["Host_Webapi"];
+                //HttpClient client = new HttpClient();
+                //client.BaseAddress = new Uri(host_Webapi);
 
-            //oc.SetAuthorizationRequest(client, newToken);
-            //var responseTwo = await client.GetAsync("/api/values");
+                //oc.SetAuthorizationRequest(client, newToken);
+                //var responseTwo = await client.GetAsync("/api/values");
 
-            //使用下面一行代码，简化上面注释的代码
-            var resourceClient = oc.GetResourceClient(userToken);
-            //TokenRepository.SetUserToken( oc.CurrentToken);
-            var responseTwo = await resourceClient.GetAsync("/api/values");
-            if (responseTwo.StatusCode != HttpStatusCode.OK)
-            {
-                ViewBag.Message = "访问WebAPI 失败。";
+                //使用下面一行代码，简化上面注释的代码
+                var resourceClient = oc.GetResourceClient(userToken);
+                //TokenRepository.SetUserToken( oc.CurrentToken);
+                var responseTwo = await resourceClient.GetAsync("/api/values");
+                if (responseTwo.StatusCode != HttpStatusCode.OK)
+                {
+                    ViewBag.Message = "访问WebAPI 失败。";
+                }
+                ViewBag.Message = await responseTwo.Content.ReadAsStringAsync();
             }
-            ViewBag.Message = await responseTwo.Content.ReadAsStringAsync();
             return View();
         }
     }

@@ -185,12 +185,13 @@ namespace PWMIS.OAuth2.Tools
                 {
                     if (this.Config.EnableRequestLog)
                     {
-                        string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Old-Token:{5}\r\n  Statue:{6} \r\n",
+                        string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Old-Token:{5}\r\n  Statue:{6} \r\n  ExctionMessage:{7}\r\n",
                             DateTime.Now.ToLongTimeString(),
                             request.Method.ToString(), request.RequestUri.ToString(),
                             client.BaseAddress.ToString(), url,
                             tm.OldToken.AccessToken,
-                            "BadRequest"
+                            "BadRequest",
+                            tm.TokenExctionMessage
                             );
 
                         WriteLogFile(logTxt);

@@ -7,18 +7,28 @@ using System.Threading.Tasks;
 
 namespace PWMIS.OAuth2.Tools
 {
+    /// <summary>
+    /// 令牌管理器
+    /// </summary>
     public class TokenManager:IDisposable
     {
         private static Dictionary<string, UserTokenInfo> dictUserToken = new Dictionary<string, UserTokenInfo>();
-        private AutoResetEvent CurrentTokenLock;
-
+        //private AutoResetEvent CurrentTokenLock;
+        /// <summary>
+        /// 获取令牌关联的用户名
+        /// </summary>
         public string UserName { get; private set; }
+        /// <summary>
+        /// 当前用户的令牌信息
+        /// </summary>
         public UserTokenInfo CurrentUserTokenInfo { get; private set; }
         /// <summary>
         /// 获取刷新令牌之前的令牌
         /// </summary>
         public TokenResponse OldToken { get; private set; }
-
+        /// <summary>
+        /// 获取或者刷新令牌期间发生的错误
+        /// </summary>
         public string TokenExctionMessage { get; private set; }
 
         /// <summary>
@@ -54,64 +64,77 @@ namespace PWMIS.OAuth2.Tools
         /// <summary>
         /// 取一个访问令牌
         /// </summary>
-        /// <returns></returns>
+        /// <returns>如果没有或者获取令牌失败，返回空</returns>
         public TokenResponse TakeToken()
         {
             if (dictUserToken.ContainsKey(this.UserName))
             {
                 UserTokenInfo uti = dictUserToken[this.UserName];
                 //获取当前用户的读写锁
-                this.CurrentTokenLock = uti.TokenLock;
+                //this.CurrentTokenLock = uti.TokenLock;
                 //this.CurrentTokenLock.EnterUpgradeableReadLock();
                 //Console.WriteLine("...EnterUpgradeableReadLock...,Thread ID:{0}",Thread.CurrentThread.ManagedThreadId);
                 this.OldToken = uti.Token;
-                //Thread.Sleep(1000);
-                Console.WriteLine("thread waite one.thread:{0}", Thread.CurrentThread.ManagedThreadId);
-                this.CurrentTokenLock.WaitOne(10000);
 
-                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in - 2)
+                //如果令牌超期，刷新令牌
+                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in )
                 {
-                    //等待所有使用此令牌的线程使用完成
-                    Console.WriteLine("thread reset begin. thread:{0}", Thread.CurrentThread.ManagedThreadId);
-                    this.CurrentTokenLock.Reset();
-                    try
+                    lock (uti.SyncObject)
                     {
-                        if(uti.UseCount>0)
-                            Thread.Sleep(2000);//睡2秒，等待之前的请求处理完
                         //防止线程重入，再次判断
-                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in - 2)
+                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in)
                         {
+                            //等待之前的用户使用完令牌
+                            while (uti.UseCount > 0)
+                            {
+                                if (DateTime.Now.Subtract(uti.LastUseTime).TotalSeconds > 10)
+                                {
+                                    //如果发出请求超过10秒使用计数还大于0，可以认为资源服务器响应缓慢，最终请求此资源可能会拒绝访问
+                                    this.TokenExctionMessage = "Resouce Server maybe Request TimeOut.";
+                                    break;
+                                }
+                                System.Threading.Thread.Sleep(100);
+                                Console.WriteLine("----waite token Use Count is 0.--------");
+                            }
                             //刷新令牌
-                            OAuthClient oc = new OAuthClient();
-                            var newToken = oc.RefreshToken(uti.Token);
-                            uti.ResetToken(newToken);
-                            this.TokenExctionMessage = oc.ExceptionMessage;
+                            try
+                            {
+                                OAuthClient oc = new OAuthClient();
+                                var newToken = oc.RefreshToken(uti.Token);
+                                if (newToken == null)
+                                    throw new Exception("Refresh Token Error:" + oc.ExceptionMessage);
+
+                                uti.ResetToken(newToken);
+                                this.TokenExctionMessage = oc.ExceptionMessage;
+                            }
+                            catch (Exception ex)
+                            {
+                                this.TokenExctionMessage = ex.Message;
+                                return null;
+                            }
+                           
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.TokenExctionMessage = ex.Message;
-                        return null;
-                    }
-                    finally
-                    {
-                        Console.WriteLine("thread set. thread:{0}", Thread.CurrentThread.ManagedThreadId);
-                        this.CurrentTokenLock.Set();
-                    }
+                    }//end lock
                 }
                
-                Console.WriteLine("thread continue. thread:{0}", Thread.CurrentThread.ManagedThreadId);
                 this.CurrentUserTokenInfo = uti;
                 uti.BeginUse();
-                this.CurrentTokenLock.Set();
+                //this.CurrentTokenLock.Set();
                 return uti.Token;
             }
             else
             {
-                throw new Exception(this.UserName+" 还没有访问令牌。");
+                //throw new Exception(this.UserName+" 还没有访问令牌。");
+                this.TokenExctionMessage = this.UserName + " 还没有访问令牌。";
+                return null;
             }
         }
 
+        /// <summary>
+        /// 验证当令牌对当前用户是否有效，如果有效，返回 OK
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public string ValidateToken(string token)
         {
             if (dictUserToken.ContainsKey(this.UserName))
@@ -121,7 +144,9 @@ namespace PWMIS.OAuth2.Tools
             }
             return "NotExists";
         }
-
+        /// <summary>
+        /// 释放当前令牌使用计数
+        /// </summary>
         public void Dispose()
         {
             if (this.CurrentUserTokenInfo != null)

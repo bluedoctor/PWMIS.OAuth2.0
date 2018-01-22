@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 
@@ -28,7 +29,7 @@ namespace PWMIS.OAuth2.Tools
          * 5，【资源服务器】的受限资源（API）验证通过访问，返回结果给客户端。
          */
 
-        protected override System.Threading.Tasks.Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
             if (request.Headers.Authorization != null && request.Headers.Authorization.Parameter != null)
             {
@@ -39,7 +40,7 @@ namespace PWMIS.OAuth2.Tools
                 _httpClient.BaseAddress = new Uri(Host_AuthCenter);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var response = _httpClient.GetAsync("/api/AccessToken").Result;
+                var response = await _httpClient.GetAsync("/api/AccessToken");//.Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     string[] result = response.Content.ReadAsAsync<string[]>().Result;
@@ -55,7 +56,7 @@ namespace PWMIS.OAuth2.Tools
             }
             
           
-            return base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken);
         }
     }
 }

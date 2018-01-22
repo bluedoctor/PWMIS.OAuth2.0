@@ -89,9 +89,11 @@ namespace Demo.OAuth2.Port.Controllers
         [Authorize]
         public ActionResult GetUserToken()
         {
-            TokenManager tm = new TokenManager(User.Identity.Name );
-            var token = tm.TakeToken();
-            return Content(token.AccessToken);
+            using (TokenManager tm = new TokenManager(User.Identity.Name))
+            {
+                var token = tm.TakeToken();
+                return Content(token.AccessToken);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             }
             if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
             {
-                context.SetError("invalid_client", "client or clientSecret is null or empty");
+                context.SetError("PWMIS.OAuth2 invalid_client", "client or clientSecret is null or empty");
                 return;
             }
 
@@ -38,14 +38,14 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             {
                 if (!await identityRepository.ValidateClient(clientId, clientSecret))
                 {
-                    context.SetError("invalid_client", "client or clientSecret is not valid");
+                    context.SetError("PWMIS.OAuth2 invalid_client", "client or clientSecret is not valid");
                     return;
                 }
             }
             catch (Exception ex)
             {
-                context.SetError("identity_repository_error", ex.Message );
-                Log("identity_repository_error:" + ex.Message);
+                context.SetError("PWMIS.OAuth2 identity_repository_error", ex.Message );
+                Log("PWMIS.OAuth2 identity_repository_error:" + ex.Message);
                 return;
             }
           
@@ -71,12 +71,12 @@ namespace PWMIS.OAuth2.AuthorizationCenter
         {
             if (string.IsNullOrEmpty(context.UserName))
             {
-                context.SetError("invalid_username", "username is not valid");
+                context.SetError("PWMIS.OAuth2 invalid_username", "username is not valid");
                 return;
             }
             if (string.IsNullOrEmpty(context.Password))
             {
-                context.SetError("invalid_password", "password is not valid");
+                context.SetError("PWMIS.OAuth2 invalid_password", "password is not valid");
                 return;
             }
 
@@ -86,19 +86,19 @@ namespace PWMIS.OAuth2.AuthorizationCenter
                 LoginResultModel user = await service.UserLogin(context.UserName, context.Password);
                 if (user == null)
                 {
-                    context.SetError("invalid_identity", "username or password is not valid");
+                    context.SetError("PWMIS.OAuth2 invalid_identity", "username or password is not valid");
                     return;
                 }
                 else  if (string.IsNullOrEmpty(user.UserName))
                 {
-                    context.SetError("invalid_identity", user.ErrorMessage);
+                    context.SetError("PWMIS.OAuth2 invalid_identity", user.ErrorMessage);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                context.SetError("identity_service_error", ex.Message );
-                Log("identity_service_error:" + ex.Message);
+                context.SetError("PWMIS.OAuth2 identity_service_error", ex.Message );
+                Log("PWMIS.OAuth2 identity_service_error:" + ex.Message);
                 return;
             }
            
