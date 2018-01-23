@@ -32,6 +32,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Service
             }
             else
             {
+                System.Diagnostics.Stopwatch sp = new System.Diagnostics.Stopwatch();
                 var parameters = new Dictionary<string, string>();
                 //parameters.Add("ID", "");
                 parameters.Add("UserName", userName);
@@ -39,19 +40,48 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Service
                 //parameters.Add("Roles", "");
                 string loginUrl = System.Configuration.ConfigurationManager.AppSettings["IdentityWebAPI"];
                 HttpClient httpClient = new HttpClient();
+                LoginResultModel result = null;
+                sp.Start();
                 var response = await httpClient.PostAsync(loginUrl, new FormUrlEncodedContent(parameters));
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    LoginResultModel result = new LoginResultModel();
+                    result = new LoginResultModel();
                     result.UserName = userName;
-                    result.ErrorMessage = response.Content.ReadAsAsync<HttpError>().Result.ExceptionMessage;
-                    return result;
+                    try
+                    {
+                        result.ErrorMessage = response.Content.ReadAsAsync<HttpError>().Result.ExceptionMessage;
+                    }
+                    catch 
+                    {
+                        result.ErrorMessage = "登录错误（错误信息无法解析），服务器状态码："+response.StatusCode;
+                    }
                 }
                 else
                 {
-                    var result = await response.Content.ReadAsAsync<LoginResultModel>();
-                    return result;
+                    result = await response.Content.ReadAsAsync<LoginResultModel>();
                 }
+
+                sp.Stop();
+                if (!string.IsNullOrEmpty(result.ErrorMessage) || sp.ElapsedMilliseconds > 100)
+                    WriteLog(result, sp.ElapsedMilliseconds);
+
+                return result;
+            }
+        }
+
+        public static void WriteLog(LoginResultModel result,long logTime)
+        {
+            string filePath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, "UserLog.txt");
+            try
+            {
+                string text = string.Format("{0} User :{1} Web Login used time(ms):{2}, ErrorMsg:{3}\r\n", DateTime.Now.ToString(), 
+                    result.UserName, logTime, result.ErrorMessage);
+
+                System.IO.File.AppendAllText(filePath, text);
+            }
+            catch
+            {
+
             }
         }
     }

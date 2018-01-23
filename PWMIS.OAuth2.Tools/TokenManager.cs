@@ -91,6 +91,8 @@ namespace PWMIS.OAuth2.Tools
                                 {
                                     //如果发出请求超过10秒使用计数还大于0，可以认为资源服务器响应缓慢，最终请求此资源可能会拒绝访问
                                     this.TokenExctionMessage = "Resouce Server maybe Request TimeOut.";
+                                    OAuthClient.WriteErrorLog("00", "**警告** "+DateTime.Now.ToString()+"：用户"+this.UserName+" 最近一次使用当前令牌（"
+                                        +uti.Token.AccessToken +"）已经超时（10秒）,使用次数："+uti.UseCount+"。\r\n**下面将刷新令牌，但可能导致之前还未处理完的资源服务器访问被拒绝访问。");
                                     break;
                                 }
                                 System.Threading.Thread.Sleep(100);

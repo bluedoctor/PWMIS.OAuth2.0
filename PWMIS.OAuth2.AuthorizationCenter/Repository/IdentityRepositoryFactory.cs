@@ -7,8 +7,12 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Repository
 {
     class IdentityRepositoryFactory
     {
+        private static IIdentityRepository _IIdentityRepository = null;
+
        public static IIdentityRepository CreateInstance()
         {
+            if (_IIdentityRepository != null)
+                return _IIdentityRepository;
             string cnfig = System.Configuration.ConfigurationManager.AppSettings["IdentityRepository"];
             if (string.IsNullOrEmpty(cnfig))
                 throw new Exception("请在appSettings配置名称为 IdentityRepository 的IIdentityRepository 接口实现类，例如：\"PWMIS.OAuth2.AuthorizationCenter.Repository.SimpleIdentityRepository,PWMIS.OAuth2.AuthorizationCenter\"");
@@ -20,6 +24,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Repository
             if (provider is IIdentityRepository)
             {
                 IIdentityRepository result = provider as IIdentityRepository;
+                _IIdentityRepository = result;
                 return result;
             }
             else

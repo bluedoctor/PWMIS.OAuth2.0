@@ -43,7 +43,7 @@ namespace PWMIS.OAuth2.Tools
                 var response = await _httpClient.GetAsync("/api/AccessToken");//.Result;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    string[] result = response.Content.ReadAsAsync<string[]>().Result;
+                    string[] result = await response.Content.ReadAsAsync<string[]>();//.Result;
                     ClaimsIdentity identity = new ClaimsIdentity(result[2]);
                     identity.AddClaim(new Claim(ClaimTypes.Name, result[0]));
                     ClaimsPrincipal principal = new ClaimsPrincipal(identity);

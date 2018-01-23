@@ -209,6 +209,7 @@ namespace PWMIS.OAuth2.Tools
 
         private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpResponseMessage result, HttpClient client)
         {
+            string allLogText = "";
             if (this.Config.EnableRequestLog)
             {
                 string token = client.DefaultRequestHeaders.Authorization == null ? "" : client.DefaultRequestHeaders.Authorization.ToString();
@@ -219,7 +220,8 @@ namespace PWMIS.OAuth2.Tools
                     token
                     );
 
-                WriteLogFile(logTxt);
+                //WriteLogFile(logTxt);
+                allLogText = logTxt;
             }
 
             Stopwatch sw = new Stopwatch();
@@ -250,10 +252,10 @@ namespace PWMIS.OAuth2.Tools
             if (this.Config.EnableRequestLog)
             {
               
-                string logTxt = string.Format("End Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Statue:{5} ,\r\n  Elapsed(ms):{6} \r\n",
+                string logTxt = string.Format("End Time:{0} ,\r\n  Statue:{1} ,\r\n  Elapsed(ms):{2} \r\n",
                     DateTime.Now.ToLongTimeString(),
-                    request.Method.ToString(), request.RequestUri.ToString(),
-                    client.BaseAddress.ToString(), url,
+                    //request.Method.ToString(), request.RequestUri.ToString(),
+                    //client.BaseAddress.ToString(), url,
                     result.StatusCode.ToString(),
                     sw.Elapsed.TotalMilliseconds
                     );
@@ -263,8 +265,8 @@ namespace PWMIS.OAuth2.Tools
                     logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------\r\n";
 
                 }
-
-                WriteLogFile(logTxt);
+                allLogText += logTxt;
+                WriteLogFile(allLogText);
             }
 
             //
