@@ -23,6 +23,7 @@ namespace Demo.OAuth2.Port.Controllers
         }
 
         [HttpPost]
+        [AsyncTimeout(60000)]
         public async Task<ActionResult> Index(LogonModel model)
         {
             LogonResultModel result = new LogonResultModel();
