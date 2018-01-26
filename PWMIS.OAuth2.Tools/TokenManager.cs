@@ -105,6 +105,8 @@ namespace PWMIS.OAuth2.Tools
                                 var newToken = oc.RefreshToken(uti.Token);
                                 if (newToken == null)
                                     throw new Exception("Refresh Token Error:" + oc.ExceptionMessage);
+                                else if( string.IsNullOrEmpty( newToken.AccessToken))
+                                    throw new Exception("Refresh Token Error:Empty AccessToken. Other Message:" + oc.ExceptionMessage);
 
                                 uti.ResetToken(newToken);
                                 this.TokenExctionMessage = oc.ExceptionMessage;

@@ -247,7 +247,7 @@ namespace PWMIS.OAuth2.Tools
                 result = SendError("PWMIS ASP.NET Proxy 不支持这种 Method:" + request.Method.ToString(), HttpStatusCode.BadRequest);
             }
             sw.Stop();
-
+            result.Headers.Add("Proxy-Server", this.Config.ServerName);
 
             if (this.Config.EnableRequestLog)
             {
