@@ -106,6 +106,9 @@ namespace PWMIS.OAuth2.Tools
             {
                 return await base.SendAsync(request, cancellationToken);
             }
+            //处理代理URL地址中的服务器变量，变量名使用[]中括号表示：
+            //注意：在这里无法使用HttpContext.Current.Session，所以下面的方法出错
+            //url = url.Replace("[SessionID]", HttpContext.Current.Session.SessionID);
 
             //如果缓存没有，将继续处理
             if (request.Headers.CacheControl!=null &&
@@ -178,7 +181,10 @@ namespace PWMIS.OAuth2.Tools
                 return await ProxyReuqest(request, url, result, client);
             }
 
-            using (TokenManager tm = new TokenManager(identity.Name))
+            //处理代理的服务器变量：
+            url = url.Replace("[UserName]", identity.Name);
+
+            using (TokenManager tm = new TokenManager(identity.Name, null))
             {
                 TokenResponse token = tm.TakeToken();
                 if (token == null)

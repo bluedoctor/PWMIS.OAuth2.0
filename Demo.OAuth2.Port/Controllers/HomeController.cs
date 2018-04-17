@@ -49,7 +49,7 @@ namespace Demo.OAuth2.Port.Controllers
             //使用默认构造函数简化配置
             OAuthClient oc = new OAuthClient();
             TokenResponse userToken = null;
-            using (TokenManager tm = new TokenManager(HttpContext.User.Identity.Name))
+            using (TokenManager tm = new TokenManager(HttpContext.User.Identity.Name, Session.SessionID))
             {
                 userToken = tm.TakeToken();
                 if (userToken == null)

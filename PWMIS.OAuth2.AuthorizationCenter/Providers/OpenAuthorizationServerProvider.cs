@@ -6,6 +6,7 @@ using PWMIS.OAuth2.AuthorizationCenter.Repository;
 using PWMIS.OAuth2.AuthorizationCenter.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -69,6 +70,8 @@ namespace PWMIS.OAuth2.AuthorizationCenter
         /// </summary>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+            string validationCode = "";
+            string sessionId = "";
             if (string.IsNullOrEmpty(context.UserName))
             {
                 context.SetError("PWMIS.OAuth2 invalid_username", "username is not valid");
@@ -79,11 +82,26 @@ namespace PWMIS.OAuth2.AuthorizationCenter
                 context.SetError("PWMIS.OAuth2 invalid_password", "password is not valid");
                 return;
             }
+            if (context.Scope.Count > 0)
+            {
+                //处理用户会话标识和验证码
+                var temp= context.Scope.FirstOrDefault(p => p.Contains("ValidationCode:"));
+                if (temp != null)
+                {
+                    validationCode = temp.Split(':')[1];
+                }
+
+                var temp1 = context.Scope.FirstOrDefault(p => p.Contains("SessionID:"));
+                if (temp1 != null)
+                {
+                    sessionId = temp1.Split(':')[1];
+                }
+            }
 
             IdentityService service = new IdentityService();
             try
             {
-                LoginResultModel user = await service.UserLogin(context.UserName, context.Password);
+                LoginResultModel user = await service.UserLogin(context.UserName, context.Password,sessionId, validationCode);
                 if (user == null)
                 {
                     context.SetError("PWMIS.OAuth2 invalid_identity", "username or password is not valid");
@@ -198,7 +216,16 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             if (string.IsNullOrEmpty(logFile))
                 return;
             PWMIS.Core.CommonUtil.ReplaceWebRootPath(ref logFile);
-            System.IO.File.AppendAllText(logFile, DateTime.Now.ToString()+ "--"+ logText+"\r\n");
+            try
+            {
+                System.IO.File.AppendAllText(logFile, DateTime.Now.ToString() + "--" + logText + "\r\n");
+            }
+            catch(Exception ex)
+            {
+                string message = "尝试写日志文件失败：" + ex.Message + "。当前记录的日志消息：" + logText;
+                Startup.WriteEventLog(message, EventLogEntryType.Warning);
+            }
         }
+            
     }
 }

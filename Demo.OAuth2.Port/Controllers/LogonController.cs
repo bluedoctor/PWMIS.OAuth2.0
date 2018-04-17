@@ -34,9 +34,9 @@ namespace Demo.OAuth2.Port.Controllers
             //验证服务器验证通过，授权服务器生成访问令牌给当前站点程序
             //当前站点标记此用户登录成功，并将访问令牌存储在当前站点的用户会话中
             //当前用户下次访问别的站点的WebAPI的时候，携带此访问令牌。
-           
-            TokenManager tm = new TokenManager(model.UserName);
-            var tokenResponse = await tm.CreateToken(model.Password);
+            
+            TokenManager tm = new TokenManager(model.UserName, Session.SessionID);
+            var tokenResponse = await tm.CreateToken(model.Password,model.ValidationCode);
             if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
                 result.UserId = 123;
@@ -73,7 +73,7 @@ namespace Demo.OAuth2.Port.Controllers
         [HttpGet]
         public ActionResult ValidateUserToken(string userName, string token, string redirUrl = "")
         {
-            TokenManager tm = new TokenManager(userName);
+            TokenManager tm = new TokenManager(userName, Session.SessionID);
             string result = tm.ValidateToken(token);
             if (result=="OK")
             {
@@ -90,7 +90,7 @@ namespace Demo.OAuth2.Port.Controllers
         [Authorize]
         public ActionResult GetUserToken()
         {
-            using (TokenManager tm = new TokenManager(User.Identity.Name))
+            using (TokenManager tm = new TokenManager(User.Identity.Name, Session.SessionID))
             {
                 var token = tm.TakeToken();
                 return Content(token.AccessToken);

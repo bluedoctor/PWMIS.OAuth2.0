@@ -30,25 +30,33 @@ namespace PWMIS.OAuth2.Tools
         /// 获取或者刷新令牌期间发生的错误
         /// </summary>
         public string TokenExctionMessage { get; private set; }
+        /// <summary>
+        /// 会话标识
+        /// </summary>
+        public string SessionID { get; private set; }
 
         /// <summary>
         /// 创建指定用户的令牌管理器
         /// </summary>
-        /// <param name="userName"></param>
-        public TokenManager(string userName)
+        /// <param name="userName">标识Token拥有者的唯一用户名，不可为空</param>
+        /// <param name="sessionId">关联的会话标识，在创建令牌的时候可以使用，其它时候可以传空</param>
+        public TokenManager(string userName,string sessionId)
         {
             this.UserName = userName;
+            this.SessionID = sessionId;
         }
 
         /// <summary>
         /// 使用密码模式，给当前用户创建一个访问令牌
         /// </summary>
         /// <param name="password">用户登录密码</param>
+        /// <param name="validationCode">验证码</param>
         /// <returns></returns>
-        public async Task<TokenResponse> CreateToken(string password)
+        public async Task<TokenResponse> CreateToken(string password,string validationCode=null)
         {
             OAuthClient oc = new OAuthClient();
-            var tokenRsp= await oc.GetTokenOfPasswardGrantType(this.UserName, password);
+            oc.SessionID = this.SessionID;
+            var tokenRsp= await oc.GetTokenOfPasswardGrantType(this.UserName, password, validationCode);
             if (tokenRsp != null)
             {
                 UserTokenInfo uti = new UserTokenInfo(this.UserName, tokenRsp);

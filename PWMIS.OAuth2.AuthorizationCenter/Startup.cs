@@ -4,6 +4,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -37,6 +38,20 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             var configuration = new HttpConfiguration();
             WebApiConfig.Register(configuration);
             app.UseWebApi(configuration);
+
+            WriteEventLog("Authorization Center Start OK.", EventLogEntryType.Information);
+        }
+
+        /// <summary>
+        /// 将日志写到Windows系统日志的 Application事件源
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="enventType"></param>
+        public static void WriteEventLog(string message, EventLogEntryType enventType)
+        {
+            EventLog eventLog = new EventLog();
+            eventLog.Source = "Application";
+            eventLog.WriteEntry("PWMIS OAuth2  Event:" + message, enventType);
         }
     }
 }

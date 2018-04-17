@@ -13,7 +13,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Service
 {
     public class IdentityService
     {
-        public async Task<LoginResultModel> UserLogin(string userName, string password)
+        public async Task<LoginResultModel> UserLogin(string userName, string password,string sessionId, string validationCode)
         { 
             //通过配置，决定是使用本地数据库验证登录，还是使用登录接口服务登录
             string identityLoginMode = System.Configuration.ConfigurationManager.AppSettings["IdentityLoginMode"];
@@ -37,6 +37,8 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Service
                 //parameters.Add("ID", "");
                 parameters.Add("UserName", userName);
                 parameters.Add("Password", password);
+                parameters.Add("ID", sessionId);
+                parameters.Add("ValidationCode", validationCode);
                 //parameters.Add("Roles", "");
                 string loginUrl = System.Configuration.ConfigurationManager.AppSettings["IdentityWebAPI"];
                 HttpClient httpClient = new HttpClient();

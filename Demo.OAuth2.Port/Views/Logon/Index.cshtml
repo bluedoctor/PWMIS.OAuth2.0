@@ -7,20 +7,22 @@
     function Logon() {
         var uid = $("#uid").val();
         var pwd = $("#pwd").val();
-      
+        var vcode = $("#vcode").val();
+
         $.ajax({
             type: "post",
             url: "Logon",
             data: {
                 UserName: uid,
-                Password: pwd
+                Password: pwd,
+                ValidationCode: vcode
             },
             dataType: "json",
-            success: function (r) {                
-                if (r.UserName == "" || r.UserName==null) {
+            success: function (r) {
+                if (r.UserName == "" || r.UserName == null) {
                     alert("登录错误：" + r.LogonMessage);
                 } else {
-                   
+
                     alert(r.UserName + "登录成功！");
                     window.location.href = "/Home/Biz";
                 }
@@ -28,31 +30,54 @@
         });
     }
 
+    $(document).ready(function () {
+        //验证码，下面地址实际上会反向代理到认证服务器去，参考代理配置文件
+        $.get("/api2/Login/CreateValidate", function (data, status) {
+            if (status == "success") {
+                $("#spVcode").html(data);
+            }
+            else {
+                alert(status);
+            }
+        });
+    });
+
+
 </script>
-<h3>  Login to your account</h3>  
-    <div class="col-sm-9 col-md-9">
-        <div class="form-group">
-            用户名：<input type="text" name="LoginId" id="uid" />
-        </div>
-        <div class="form-group">
-            密码：<input type="password" name="Loginpwd" id="pwd" />
-        </div>
-        <div class="form-group">
-            <input type="submit" value="登录" onclick="Logon()" /><br />
-            
-        </div>
+<h3>  Login to your account</h3>   
+<div class="col-sm-9 col-md-9">
+    <div class="form-group">
+
+        <label for="uid">用户名：</label>
+        <input type="text" name="LoginId" id="uid" class="form-control" />
     </div>
+    <div class="form-group">
+
+        <label for="pwd">密码：</label>
+        <input type="password" name="Loginpwd" id="pwd" class="form-control" />
+    </div>
+    <div class="form-group">
+
+        <label for="vcode">验证码：</label><span id="spVcode">loading</span>
+        <input type="text" name="ValidationCode" id="vcode" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="登录" onclick="Logon()" class="btn btn-default" /><br />
+
+    </div>
+</div>
 <p>
     说明：如果登录异常，请查看授权服务器的日志文件：<a href="@ViewBag.Host_AuthorizationCenter/AuthError.txt">AuthError.txt</a>。
     注意，如果使用了代理，则需要到授权服务器去查看此文件。    <br />
     1,如果出现下面的错误信息：<br />
     <div class="alert alert-danger">DataBase ErrorMessage:;An attempt to attach an auto-named database for file </div>
-        如果授权服务器数据目录下没有此数据库文件，请用VS创建一个；如果有此数据库文件，可能数据库版本不对，请修改站点的Web.config文件的连接字符串设置。</br>
-        
+    如果授权服务器数据目录下没有此数据库文件，请用VS创建一个；如果有此数据库文件，可能数据库版本不对，请修改站点的Web.config文件的连接字符串设置。</br>
+
     2,如果授权服务器的 AuthError.txt出现下面的错误内容：<br />
     <div class="alert alert-danger">
-        identity_service_error:没有可用的 MediaTypeFormatter，无法从媒体类型为“text/html”的内容中读取类型为“HttpError”的对象。</div>
-        请点击<a href="~/TestLogin.html">此链接进行测试</a>，获得详细错误原因。
+        identity_service_error:没有可用的 MediaTypeFormatter，无法从媒体类型为“text/html”的内容中读取类型为“HttpError”的对象。
+    </div>
+    请点击<a href="~/TestLogin.html">此链接进行测试</a>，获得详细错误原因。
 </p>
 
 

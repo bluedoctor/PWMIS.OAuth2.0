@@ -112,7 +112,7 @@ namespace Demo.OAuth2.ConsoleTest
 
         public async Task OAuth_Password_Test2(string apiUrl)
         {
-            TokenManager tm = new TokenManager("pwmis");
+            TokenManager tm = new TokenManager("pwmis","1234567890");
             var tokenResponse =await tm.CreateToken("oath2");
             oAuthCenterClient.CurrentToken = tokenResponse;
             //获取 access_token 后10秒内必须使用它，否则会过期，需要刷新后取得它再访问资源服务器

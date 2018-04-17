@@ -27,6 +27,10 @@ namespace PWMIS.OAuth2.Tools
         /// 操作过程中的异常信息
         /// </summary>
         public string ExceptionMessage { get; private set; }
+        /// <summary>
+        /// 相关的会话标识
+        /// </summary>
+        public string SessionID { get; set; }
 
         /// <summary>
         /// 采用配置文件默认初始化
@@ -69,10 +73,12 @@ namespace PWMIS.OAuth2.Tools
         /// </summary>
         /// <param name="userName">用户名</param>
         /// <param name="password">密码</param>
+        /// <param name="validationCode">验证码</param>
         /// <returns></returns>
-        public Task<TokenResponse> GetTokenOfPasswardGrantType(string userName, string password)
+        public Task<TokenResponse> GetTokenOfPasswardGrantType(string userName, string password, string validationCode)
         {
-            return GetToken("password", null, userName, password);
+            string scope = string.Format("SessionID:{0} ValidationCode:{1}", this.SessionID, validationCode);
+            return GetToken("password", null, userName, password,null, scope);
         }
         /// <summary>
         /// 获取访问令牌
@@ -82,8 +88,9 @@ namespace PWMIS.OAuth2.Tools
         /// <param name="userName">用户名</param>
         /// <param name="password">用户密码</param>
         /// <param name="authorizationCode">授权码</param>
+        /// <param name="scope">可选业务参数</param>
         /// <returns></returns>
-         public  async Task<TokenResponse> GetToken(string grantType, string refreshToken = null, string userName = null, string password = null, string authorizationCode = null)
+         public  async Task<TokenResponse> GetToken(string grantType, string refreshToken = null, string userName = null, string password = null, string authorizationCode = null,string scope=null)
         {
             var clientId = System.Configuration.ConfigurationManager.AppSettings["ClientID"];
             var clientSecret = System.Configuration.ConfigurationManager.AppSettings["ClientSecret"];
@@ -95,6 +102,8 @@ namespace PWMIS.OAuth2.Tools
             {
                 parameters.Add("username", userName);
                 parameters.Add("password", password);
+                parameters.Add("scope", scope);
+           
             }
             if (!string.IsNullOrEmpty(authorizationCode))
             {
@@ -128,9 +137,9 @@ namespace PWMIS.OAuth2.Tools
                             string errMsg = "";
                             foreach (var item in error)
                             {
-                                errMsg += item.Key + "," + (item.Value == null ? "" : item.Value.ToString()) + ";";
+                                errMsg += item.Key + ":\"" + (item.Value == null ? "" : item.Value.ToString()) + "\",";
                             }
-                            this.ExceptionMessage = "HttpError:" + errMsg;
+                            this.ExceptionMessage = "HttpError:{" + errMsg.TrimEnd(',')+"}";
                         }
                         else
                         {
@@ -157,7 +166,7 @@ namespace PWMIS.OAuth2.Tools
                     }
 
                     WriteErrorLog(errCode, "StatusCode:" + response.StatusCode + "\r\n" + this.ExceptionMessage);
-                    this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
+                    this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorObject:{" + this.ExceptionMessage + "}}";
                     return null;
                 }
                 return await response.Content.ReadAsAsync<TokenResponse>();
@@ -167,13 +176,13 @@ namespace PWMIS.OAuth2.Tools
                 string errMsg = "";
                 foreach (var ex in agex.InnerExceptions)
                 {
-                    errMsg += ex.Message;
+                    errMsg += ex.Message+",";
                 }
 
                 errCode = "1003";
                 this.ExceptionMessage = errMsg;
                 WriteErrorLog(errCode, errMsg);
-                this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
+                this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorMessage:'" + this.ExceptionMessage + "'}";
                 return null;
             }
             catch (Exception ex)
@@ -181,7 +190,7 @@ namespace PWMIS.OAuth2.Tools
                 this.ExceptionMessage = ex.Message;
                 errCode = "1004";
                 WriteErrorLog(errCode, this.ExceptionMessage);
-                this.ExceptionMessage = "ErrCode:" + errCode + ",ErrMsg:'" + this.ExceptionMessage + "'";
+                this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorMessage:'" + this.ExceptionMessage + "'}";
                 return null;
             }
         }
