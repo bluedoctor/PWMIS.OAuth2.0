@@ -32,7 +32,10 @@
 
     $(document).ready(function () {
         //验证码，下面地址实际上会反向代理到认证服务器去，参考代理配置文件
-        $.get("/api2/Login/CreateValidate", function (data, status) {
+        //下面两个URL地址都可以获取验证码，具体参考代理配置文件
+        var vcodeUrl = "/api/Login/CreateValidate";
+        //var vcodeUrl = "/api2/Login/CreateValidate";
+        $.get(vcodeUrl, function (data, status) {
             if (status == "success") {
                 $("#spVcode").html(data);
             }

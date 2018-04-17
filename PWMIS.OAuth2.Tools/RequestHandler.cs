@@ -28,6 +28,16 @@ namespace PWMIS.OAuth2.Tools
     {
         ProxyConfig _config;
         private static object sync_obj = new object();
+        //多个不同站点用同一个httpClient会出问题，待解决
+        private static readonly HttpClient _httpClient;  
+
+        static ProxyRequestHandler()
+        {
+            _httpClient = new HttpClient();
+            _httpClient.Timeout = new TimeSpan(0, 0, 10);
+            _httpClient.DefaultRequestHeaders.Connection.Add("keep-alive");
+
+        }
         /// <summary>
         /// 获取或者设置代理服务配置
         /// </summary>
@@ -164,8 +174,8 @@ namespace PWMIS.OAuth2.Tools
         private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress)
         {
             HttpResponseMessage result = null;
-            HttpClient client = new HttpClient();
-           
+            HttpClient client = _httpClient;// new HttpClient();
+         
             client.BaseAddress = baseAddress;
             //复制请求头，转发请求
             foreach (var item in request.Headers)
