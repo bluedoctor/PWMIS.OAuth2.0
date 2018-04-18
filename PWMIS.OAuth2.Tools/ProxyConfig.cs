@@ -44,6 +44,11 @@ namespace PWMIS.OAuth2.Tools
         /// </summary>
         public string OAuthRedirUrl { get; set; }
 
+        /// <summary>
+        /// 目标API地址访问未授权，是否跳转OAuthRedirUrl。如果跳转，将跳转到OAuthRedirUrl 指定的页面，如果不跳转，会直接抛出 HTTP Statue Unauthorized
+        /// </summary>
+        public bool UnauthorizedRedir { get; set; }
+
     }
 
     /// <summary>

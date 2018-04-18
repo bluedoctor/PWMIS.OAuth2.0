@@ -137,7 +137,7 @@ namespace PWMIS.OAuth2.Tools
             else
             {
                 //throw new Exception(this.UserName+" 还没有访问令牌。");
-                this.TokenExctionMessage = this.UserName + " 还没有访问令牌。";
+                this.TokenExctionMessage = "UserNoToken";
                 return null;
             }
         }

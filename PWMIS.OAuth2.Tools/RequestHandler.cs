@@ -2,7 +2,7 @@
  * 本文代码来自网上，请参考 
  * http://blog.csdn.net/sqqyq/article/details/50920261
  * https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/http-message-handlers
- * 
+ * 有关 HttpClient 的使用注意事项，请参考链接： 
  */
 
 
@@ -29,14 +29,53 @@ namespace PWMIS.OAuth2.Tools
         ProxyConfig _config;
         private static object sync_obj = new object();
         //多个不同站点用同一个httpClient会出问题，待解决
-        private static readonly HttpClient _httpClient;  
+        //private static readonly HttpClient _httpClient;
+        private static Dictionary<string, HttpClient> dictHttpClient;
 
         static ProxyRequestHandler()
         {
-            _httpClient = new HttpClient();
-            _httpClient.Timeout = new TimeSpan(0, 0, 10);
-            _httpClient.DefaultRequestHeaders.Connection.Add("keep-alive");
+            var sp = ServicePointManager.FindServicePoint(new Uri("http://foo.bar"));
+            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
 
+            dictHttpClient = new Dictionary<string, HttpClient>();
+        }
+
+        private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request)
+        {
+            string key = baseAddress.ToString();
+            if (dictHttpClient.ContainsKey(key))
+            {
+                return dictHttpClient[key];
+            }
+            else
+            {
+                lock (sync_obj)
+                {
+                    if (dictHttpClient.ContainsKey(key))
+                    {
+                        return dictHttpClient[key];
+                    }
+                    else
+                    {
+                        HttpClient client = new HttpClient();
+                        client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
+                        client.DefaultRequestHeaders.Connection.Add("keep-alive");
+
+                        client.BaseAddress = baseAddress;
+                        //复制请求头，转发请求
+                        foreach (var item in request.Headers)
+                        {
+                            client.DefaultRequestHeaders.Add(item.Key, item.Value);
+                        }
+                        client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
+                        client.DefaultRequestHeaders.Host = baseAddress.Host;
+
+                        dictHttpClient.Add(key, client);
+
+                        return client;
+                    }
+                }
+            }
         }
         /// <summary>
         /// 获取或者设置代理服务配置
@@ -49,7 +88,11 @@ namespace PWMIS.OAuth2.Tools
                    string filePath=  HttpContext.Current.Server.MapPath("/ProxyServer.config");
                    if (!System.IO.File.Exists(filePath))
                        throw new Exception("当前站点根目录下没有发现代理配置文件：ProxyServer.config");
-                   string configStr = System.IO.File.ReadAllText(filePath);
+                    //每行 # 开头，表示注释内容，忽略
+                    string[] configArr = System.IO.File.ReadAllLines(filePath);
+                    string[] configArr1= configArr.Where(p => !p.TrimStart(' ', '\t').StartsWith("#")).ToArray();
+                    string configStr = string.Concat(configArr1);
+                    //string configStr = System.IO.File.ReadAllText(filePath);
                    _config = Newtonsoft.Json.JsonConvert.DeserializeObject<ProxyConfig>(configStr);
                 }
                 return _config;
@@ -174,8 +217,10 @@ namespace PWMIS.OAuth2.Tools
         private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress)
         {
             HttpResponseMessage result = null;
-            HttpClient client = _httpClient;// new HttpClient();
-         
+            HttpClient client = GetHttpClient(baseAddress, request);
+
+            /*
+             * 以下设置已经在GetHttpClient 处理过，不可重复设置，否则异常
             client.BaseAddress = baseAddress;
             //复制请求头，转发请求
             foreach (var item in request.Headers)
@@ -184,6 +229,7 @@ namespace PWMIS.OAuth2.Tools
             }
             client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
             client.DefaultRequestHeaders.Host =  baseAddress.Host;
+            */
 
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
@@ -192,11 +238,14 @@ namespace PWMIS.OAuth2.Tools
             }
 
             //处理代理的服务器变量：
-            url = url.Replace("[UserName]", identity.Name);
+            //url = url.Replace("[UserName]", identity.Name);
 
             using (TokenManager tm = new TokenManager(identity.Name, null))
             {
                 TokenResponse token = tm.TakeToken();
+                //存在客户端登录，但是服务器重启会话丢失的情况，这时候将无法取到令牌，
+                //这种情况下视为客户未登录，由资源服务器来决定该访问是否需要验证授权
+                //所以代理服务不直接抛出错误请求。
                 if (token == null)
                 {
                     if (this.Config.EnableRequestLog)
@@ -205,14 +254,17 @@ namespace PWMIS.OAuth2.Tools
                             DateTime.Now.ToLongTimeString(),
                             request.Method.ToString(), request.RequestUri.ToString(),
                             client.BaseAddress.ToString(), url,
-                            tm.OldToken.AccessToken,
-                            "BadRequest",
+                            tm.OldToken==null? "[OldToken=null]" : tm.OldToken.AccessToken,
+                            "TokenGainFailure",
                             tm.TokenExctionMessage
                             );
 
                         WriteLogFile(logTxt);
                     }
-                    return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.BadRequest);
+                    if(tm.TokenExctionMessage== "UserNoToken")
+                        return await ProxyReuqest(request, url, result, client);
+                    else
+                        return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.BadRequest);
                 }
                 else
                 {
@@ -292,7 +344,7 @@ namespace PWMIS.OAuth2.Tools
             }
             else
             {
-                if (result.StatusCode == HttpStatusCode.Unauthorized)
+                if (result.StatusCode == HttpStatusCode.Unauthorized && this.Config.UnauthorizedRedir)
                 {
                     //如果未登录，禁止访问API，跳转到相应的页面
                     HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Redirect);
