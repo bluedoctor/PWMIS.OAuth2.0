@@ -31,6 +31,7 @@ namespace PWMIS.OAuth2.Tools
         //多个不同站点用同一个httpClient会出问题，待解决
         //private static readonly HttpClient _httpClient;
         private static Dictionary<string, HttpClient> dictHttpClient;
+        private static CookieContainer cc = new CookieContainer();
 
         static ProxyRequestHandler()
         {
@@ -42,40 +43,65 @@ namespace PWMIS.OAuth2.Tools
 
         private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request)
         {
-            string key = baseAddress.ToString();
-            if (dictHttpClient.ContainsKey(key))
+            //注意：应该每个浏览器客户端一个HttpClient 实例，这样才可以保证各自的会话不冲突
+
+            //string key = baseAddress.ToString();
+            //if (dictHttpClient.ContainsKey(key))
+            //{
+            //    return dictHttpClient[key];
+            //}
+            //else
+            //{
+            //    lock (sync_obj)
+            //    {
+            //        if (dictHttpClient.ContainsKey(key))
+            //        {
+            //            return dictHttpClient[key];
+            //        }
+            //        else
+            //        {
+
+            CookieContainer cc = new CookieContainer();
+            HttpClientHandler httpClientHandler = new HttpClientHandler();
+            httpClientHandler.CookieContainer = cc;
+            httpClientHandler.UseCookies = true;
+
+            HttpClient client = new HttpClient(httpClientHandler);
+            client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
+            //client.DefaultRequestHeaders.Connection.Add("keep-alive");
+            
+
+            client.BaseAddress = baseAddress;
+          
+            //复制Cookies
+            var cookies = request.Headers.GetCookies();
+            foreach (var c in cookies)
             {
-                return dictHttpClient[key];
-            }
-            else
-            {
-                lock (sync_obj)
+                foreach (var item in c.Cookies)
                 {
-                    if (dictHttpClient.ContainsKey(key))
-                    {
-                        return dictHttpClient[key];
-                    }
-                    else
-                    {
-                        HttpClient client = new HttpClient();
-                        client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
-                        client.DefaultRequestHeaders.Connection.Add("keep-alive");
-
-                        client.BaseAddress = baseAddress;
-                        //复制请求头，转发请求
-                        foreach (var item in request.Headers)
-                        {
-                            client.DefaultRequestHeaders.Add(item.Key, item.Value);
-                        }
-                        client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
-                        client.DefaultRequestHeaders.Host = baseAddress.Host;
-
-                        dictHttpClient.Add(key, client);
-
-                        return client;
-                    }
+                    Cookie cookie1 = new Cookie(item.Name, item.Value);
+                    cookie1.Domain = baseAddress.Host;
+                    cc.Add(cookie1);
                 }
             }
+
+            //复制请求头，转发请求
+            foreach (var item in request.Headers)
+            {
+                client.DefaultRequestHeaders.Add(item.Key, item.Value);
+            }
+
+            client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
+            client.DefaultRequestHeaders.Host = baseAddress.Host;
+
+           
+
+            //dictHttpClient.Add(key, client);
+
+            return client;
+            //        }
+            //    }
+            //}
         }
         /// <summary>
         /// 获取或者设置代理服务配置

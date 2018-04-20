@@ -18,6 +18,7 @@ namespace Demo.OAuth2.Port.Controllers
         // GET: /Logon/
         public ActionResult Index()
         {
+            //this.Response.AppendCookie(new HttpCookie("aaa", "11111"));
             ViewBag.Host_AuthorizationCenter = System.Configuration.ConfigurationManager.AppSettings["Host_AuthorizationCenter"];
             return View();
         }
@@ -34,7 +35,7 @@ namespace Demo.OAuth2.Port.Controllers
             //验证服务器验证通过，授权服务器生成访问令牌给当前站点程序
             //当前站点标记此用户登录成功，并将访问令牌存储在当前站点的用户会话中
             //当前用户下次访问别的站点的WebAPI的时候，携带此访问令牌。
-            
+          
             TokenManager tm = new TokenManager(model.UserName, Session.SessionID);
             var tokenResponse = await tm.CreateToken(model.Password,model.ValidationCode);
             if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse.AccessToken))
