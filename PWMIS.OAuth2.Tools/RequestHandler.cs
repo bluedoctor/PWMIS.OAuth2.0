@@ -28,63 +28,96 @@ namespace PWMIS.OAuth2.Tools
     {
         ProxyConfig _config;
         private static object sync_obj = new object();
-        //多个不同站点用同一个httpClient会出问题，待解决
-        //private static readonly HttpClient _httpClient;
-        private static Dictionary<string, HttpClient> dictHttpClient;
-        private static CookieContainer cc = new CookieContainer();
+        private Dictionary<string, HttpClient> dictHttpClient;
 
-        static ProxyRequestHandler()
+        public  ProxyRequestHandler()
         {
-            var sp = ServicePointManager.FindServicePoint(new Uri("http://foo.bar"));
-            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
-
+            //注意：整个应用程序周期，ProxyRequestHandler 是一个单例，所以本类不能随意使用全局变量。
             dictHttpClient = new Dictionary<string, HttpClient>();
         }
 
-        private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request)
+        static ProxyRequestHandler()
         {
-            //注意：应该每个浏览器客户端一个HttpClient 实例，这样才可以保证各自的会话不冲突
+            //定期清除DNS缓存
+            var sp = ServicePointManager.FindServicePoint(new Uri("http://foo.bar"));
+            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
+        }
 
-            //string key = baseAddress.ToString();
-            //if (dictHttpClient.ContainsKey(key))
-            //{
-            //    return dictHttpClient[key];
-            //}
-            //else
-            //{
-            //    lock (sync_obj)
-            //    {
-            //        if (dictHttpClient.ContainsKey(key))
-            //        {
-            //            return dictHttpClient[key];
-            //        }
-            //        else
-            //        {
-
-            CookieContainer cc = new CookieContainer();
-            HttpClientHandler httpClientHandler = new HttpClientHandler();
-            httpClientHandler.CookieContainer = cc;
-            httpClientHandler.UseCookies = true;
-
-            HttpClient client = new HttpClient(httpClientHandler);
-            client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
-            //client.DefaultRequestHeaders.Connection.Add("keep-alive");
-            
-
-            client.BaseAddress = baseAddress;
-          
-            //复制Cookies
-            var cookies = request.Headers.GetCookies();
-            foreach (var c in cookies)
+        private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request,bool sessionRequired)
+        {
+            if (sessionRequired)
             {
-                foreach (var item in c.Cookies)
+                //注意：应该每个浏览器客户端一个HttpClient 实例，这样才可以保证各自的会话不冲突
+                var client = getSessionHttpClient(request, baseAddress.Host);
+                setHttpClientHeader(client, baseAddress, request);
+                return client;
+            }
+            else
+            {
+                string key = baseAddress.ToString();
+                if (dictHttpClient.ContainsKey(key))
                 {
-                    Cookie cookie1 = new Cookie(item.Name, item.Value);
-                    cookie1.Domain = baseAddress.Host;
-                    cc.Add(cookie1);
+                    return dictHttpClient[key];
+                }
+                else
+                {
+                    lock (sync_obj)
+                    {
+                        if (dictHttpClient.ContainsKey(key))
+                        {
+                            return dictHttpClient[key];
+                        }
+                        else
+                        {
+                            var client = getNoneSessionHttpClient(request, baseAddress.Host);
+                            setHttpClientHeader(client, baseAddress, request);
+                            dictHttpClient.Add(key, client);
+                            return client;
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        private HttpClient getSessionHttpClient(HttpRequestMessage request,string host)
+        {
+            CookieContainer cc = new CookieContainer();
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.CookieContainer = cc;
+            handler.UseCookies = true;
+
+            HttpClient client = new HttpClient(handler);
+           
+            //client.DefaultRequestHeaders.Connection.Add("keep-alive");
+            //dictHttpClient.Add(key, client);
+
+            //复制Cookies
+            var headerCookies = request.Headers.GetCookies();
+            foreach (var chv in headerCookies)
+            {
+                foreach (var item in chv.Cookies)
+                {
+                    Cookie cookie = new Cookie(item.Name, item.Value);
+                    cookie.Domain = host;
+                    cc.Add(cookie);
                 }
             }
 
+            return client;
+        }
+
+        private HttpClient getNoneSessionHttpClient(HttpRequestMessage request, string host)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Connection.Add("keep-alive");
+            return client;
+        }
+
+        private void setHttpClientHeader(HttpClient client, Uri baseAddress, HttpRequestMessage request)
+        {
+            client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
+            client.BaseAddress = baseAddress;
             //复制请求头，转发请求
             foreach (var item in request.Headers)
             {
@@ -93,16 +126,8 @@ namespace PWMIS.OAuth2.Tools
 
             client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
             client.DefaultRequestHeaders.Host = baseAddress.Host;
-
-           
-
-            //dictHttpClient.Add(key, client);
-
-            return client;
-            //        }
-            //    }
-            //}
         }
+
         /// <summary>
         /// 获取或者设置代理服务配置
         /// </summary>
@@ -162,6 +187,7 @@ namespace PWMIS.OAuth2.Tools
           
 
             bool matched = false;
+            bool sessionRequired = false;
             string url = request.RequestUri.PathAndQuery;
             Uri baseAddress=null;
             //处理代理规则
@@ -176,6 +202,8 @@ namespace PWMIS.OAuth2.Tools
                         url = url.Replace(route.Match, route.Map);
                     }
                     matched = true;
+                    if (route.SessionRequired)
+                        sessionRequired = true;
                     //break;
                     //只要不替换前缀，还可以继续匹配并且替换剩余部分
                 }
@@ -197,12 +225,12 @@ namespace PWMIS.OAuth2.Tools
                 var response = ProxyCacheProcess(this,request);
                 if (response == null)
                 {
-                    response = await GetNewResponseMessage(request, url, baseAddress);
+                    response = await GetNewResponseMessage(request, url, baseAddress, sessionRequired);
                     SetRequestCache(url, response);
                 }
                 return response;
             }
-            return await GetNewResponseMessage(request, url, baseAddress);
+            return await GetNewResponseMessage(request, url, baseAddress, sessionRequired);
         }
 
         #region 缓存相关
@@ -239,28 +267,16 @@ namespace PWMIS.OAuth2.Tools
         /// <param name="request"></param>
         /// <param name="url"></param>
         /// <param name="baseAddress"></param>
+        /// <param name="sessionRequired">是否需要会话支持</param>
         /// <returns></returns>
-        private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress)
+        private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress, bool sessionRequired)
         {
-            HttpResponseMessage result = null;
-            HttpClient client = GetHttpClient(baseAddress, request);
-
-            /*
-             * 以下设置已经在GetHttpClient 处理过，不可重复设置，否则异常
-            client.BaseAddress = baseAddress;
-            //复制请求头，转发请求
-            foreach (var item in request.Headers)
-            {
-                client.DefaultRequestHeaders.Add(item.Key, item.Value);
-            }
-            client.DefaultRequestHeaders.Add("Proxy-Server", this.Config.ServerName);
-            client.DefaultRequestHeaders.Host =  baseAddress.Host;
-            */
+            HttpClient client = GetHttpClient(baseAddress, request, sessionRequired);
 
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
             {
-                return await ProxyReuqest(request, url, result, client);
+                return await ProxyReuqest(request, url, client);
             }
 
             //处理代理的服务器变量：
@@ -288,21 +304,21 @@ namespace PWMIS.OAuth2.Tools
                         WriteLogFile(logTxt);
                     }
                     if(tm.TokenExctionMessage== "UserNoToken")
-                        return await ProxyReuqest(request, url, result, client);
+                        return await ProxyReuqest(request, url, client);
                     else
                         return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.BadRequest);
                 }
                 else
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                    return await ProxyReuqest(request, url, result, client);
+                    return await ProxyReuqest(request, url, client);
                 }
             }
-            
         }
 
-        private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpResponseMessage result, HttpClient client)
+        private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpClient client)
         {
+            HttpResponseMessage result = null;
             string allLogText = "";
             if (this.Config.EnableRequestLog)
             {

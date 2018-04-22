@@ -40,10 +40,25 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Service
                 parameters.Add("ID", sessionId);
                 parameters.Add("ValidationCode", validationCode);
                 //parameters.Add("Roles", "");
+
                 string loginUrl = System.Configuration.ConfigurationManager.AppSettings["IdentityWebAPI"];
-                HttpClient httpClient = new HttpClient();
+                string sessionCookieName = System.Configuration.ConfigurationManager.AppSettings["SessionCookieName"];
+                if (string.IsNullOrEmpty(sessionCookieName))
+                    sessionCookieName = "ASP.NET_SessionId";
+
+                //添加会话标识
+                CookieContainer cc = new CookieContainer();
+                HttpClientHandler handler = new HttpClientHandler();
+                handler.CookieContainer = cc;
+                handler.UseCookies = true;
+                Cookie cookie = new Cookie(sessionCookieName, sessionId);
+                cookie.Domain = (new Uri(loginUrl)).Host;
+                cc.Add(cookie);
+
+                HttpClient httpClient = new HttpClient(handler);
                 LoginResultModel result = null;
                 sp.Start();
+
                 var response = await httpClient.PostAsync(loginUrl, new FormUrlEncodedContent(parameters));
                 if (response.StatusCode != HttpStatusCode.OK)
                 {

@@ -22,11 +22,12 @@ namespace Demo.OAuth2.Mvc.Controllers
         {
             //由于是登录之前，这里的ID就是会话ID
             string sessionId = loginModel.ID;
+            string vcode = Session["ValidateCode"] == null ? "" : Session["ValidateCode"].ToString();
+            /*
+            //使用缓存的方式
             string cache_key = sessionId + "_ValidateCode";
-            //仅有SessionID的情况下，也不能访问别的访问者的会话，所以这里从缓存取
-            //string vcode = Session["ValidateCode"] == null ? "" : Session["ValidateCode"].ToString();
             string vcode = HttpContext.Cache[cache_key] == null ? "" : HttpContext.Cache[cache_key].ToString();
-
+            */
             LoginResultModel result = new LoginResultModel();
            
             if (!string.IsNullOrEmpty(loginModel.ValidationCode) && loginModel.ValidationCode == vcode)
@@ -46,13 +47,13 @@ namespace Demo.OAuth2.Mvc.Controllers
         public string CreateValidate()
         {
             string vcode = (new Random().Next(100000, 999999)).ToString();
-            //使用Session.SessionID 前必须访问会话对象，否则取不准确
             Session["ValidateCode"] = vcode;
-            //仅有SessionID的情况下，也不能访问别的访问者的会话，所以这里存入缓存
+            /*
+            //使用缓存的方式
             string cache_key = Session.SessionID + "_ValidateCode";
             HttpContext.Cache.Insert(cache_key,vcode,
                 null,DateTime.Now.AddMinutes(10),Cache.NoSlidingExpiration, CacheItemPriority.Low,null);
-
+            */
             return vcode;
         }
 	}

@@ -18,7 +18,8 @@ namespace Demo.OAuth2.Port.Controllers
         // GET: /Logon/
         public ActionResult Index()
         {
-            //this.Response.AppendCookie(new HttpCookie("aaa", "11111"));
+            HttpCookie ck = new HttpCookie("aa", "1111");
+            this.Response.AppendCookie(ck);
             ViewBag.Host_AuthorizationCenter = System.Configuration.ConfigurationManager.AppSettings["Host_AuthorizationCenter"];
             return View();
         }

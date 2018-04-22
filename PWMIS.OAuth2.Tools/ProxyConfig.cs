@@ -72,6 +72,10 @@ namespace PWMIS.OAuth2.Tools
         /// 转发请求的地址中被匹配的词要映射的新词
         /// </summary>
         public string Map { get; set; }
+        /// <summary>
+        /// 是否需要会话支持
+        /// </summary>
+        public bool SessionRequired { get; set; }
 
     }
 }
