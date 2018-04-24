@@ -35,7 +35,7 @@
         //下面两个URL地址都可以获取验证码，具体参考代理配置文件
         var vcodeUrl = "/api/Login/CreateValidate";
         //var vcodeUrl = "/api2/Login/CreateValidate";
-       
+       /*
         $.get(vcodeUrl, function (data, status) {
             if (status == "success") {
                 $("#spVcode").html(data);
@@ -44,7 +44,7 @@
                 alert(status);
             }
         });
-      
+      */
     });
 
 
@@ -64,7 +64,7 @@
     <div class="form-group">
 
         <label for="vcode">验证码：</label><span id="spVcode">loading</span>
-        <img src="/common/GetValidationCode" />
+        <img src="/api2/common/GetValidationCode" />
         <input type="text" name="ValidationCode" id="vcode" class="form-control" />
     </div>
     <div class="form-group">
