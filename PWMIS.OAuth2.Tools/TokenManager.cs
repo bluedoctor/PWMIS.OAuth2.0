@@ -34,6 +34,10 @@ namespace PWMIS.OAuth2.Tools
         /// 会话标识
         /// </summary>
         public string SessionID { get; private set; }
+        /// <summary>
+        /// 是否需要刷新令牌，一旦指定并且重新获取令牌后，该属性恢复False
+        /// </summary>
+        public bool NeedRefresh { get; set; }
 
         /// <summary>
         /// 创建指定用户的令牌管理器
@@ -85,26 +89,25 @@ namespace PWMIS.OAuth2.Tools
                 this.OldToken = uti.Token;
 
                 //如果令牌超期，刷新令牌
-                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in )
+                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in || NeedRefresh)
                 {
                     lock (uti.SyncObject)
                     {
                         //防止线程重入，再次判断
-                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in)
+                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in || NeedRefresh)
                         {
-                            //等待之前的用户使用完令牌
+                            //等待之前的用户使用完令牌再刷新
                             while (uti.UseCount > 0)
                             {
-                                if (DateTime.Now.Subtract(uti.LastUseTime).TotalSeconds > 10)
+                                if (DateTime.Now.Subtract(uti.LastUseTime).TotalSeconds > 5)
                                 {
-                                    //如果发出请求超过10秒使用计数还大于0，可以认为资源服务器响应缓慢，最终请求此资源可能会拒绝访问
+                                    //如果发出请求超过5秒使用计数还大于0，可以认为资源服务器响应缓慢，最终请求此资源可能会拒绝访问
                                     this.TokenExctionMessage = "Resouce Server maybe Request TimeOut.";
                                     OAuthClient.WriteErrorLog("00", "**警告** "+DateTime.Now.ToString()+"：用户"+this.UserName+" 最近一次使用当前令牌（"
-                                        +uti.Token.AccessToken +"）已经超时（10秒）,使用次数："+uti.UseCount+"。\r\n**下面将刷新令牌，但可能导致之前还未处理完的资源服务器访问被拒绝访问。");
+                                        +uti.Token.AccessToken +"）已经超时（10秒）,使用次数："+uti.UseCount+"，线程ID:"+System.Threading.Thread.CurrentThread.ManagedThreadId+"。\r\n**下面将刷新令牌，但可能导致之前还未处理完的资源服务器访问被拒绝访问。");
                                     break;
                                 }
                                 System.Threading.Thread.Sleep(100);
-                                Console.WriteLine("----waite token Use Count is 0.--------");
                             }
                             //刷新令牌
                             try
@@ -124,7 +127,7 @@ namespace PWMIS.OAuth2.Tools
                                 this.TokenExctionMessage = ex.Message;
                                 return null;
                             }
-                           
+                            NeedRefresh = false;
                         }
                     }//end lock
                 }

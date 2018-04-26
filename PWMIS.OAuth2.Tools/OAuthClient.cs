@@ -46,7 +46,7 @@ namespace PWMIS.OAuth2.Tools
 
             string host_Webapi = System.Configuration.ConfigurationManager.AppSettings["Host_Webapi"];
             if (string.IsNullOrEmpty(host_Webapi))
-                throw new Exception("请在appSettings 配置Key为Host_Webapi 的授权服务器基地址，示例：http://localhost:62477");
+                throw new Exception("请在appSettings 配置Key为Host_Webapi 的资源服务器基地址，示例：http://localhost:62477");
 
             ResourceServerClient = new HttpClient();
             ResourceServerClient.BaseAddress = new Uri(host_Webapi);

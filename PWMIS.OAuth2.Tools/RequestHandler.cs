@@ -30,7 +30,7 @@ namespace PWMIS.OAuth2.Tools
         private static object sync_obj = new object();
         private Dictionary<string, HttpClient> dictHttpClient;
 
-        public  ProxyRequestHandler()
+        public ProxyRequestHandler()
         {
             //注意：整个应用程序周期，ProxyRequestHandler 是一个单例，所以本类不能随意使用全局变量。
             dictHttpClient = new Dictionary<string, HttpClient>();
@@ -43,7 +43,7 @@ namespace PWMIS.OAuth2.Tools
             sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
         }
 
-        private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request,bool sessionRequired)
+        private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request, bool sessionRequired)
         {
             if (sessionRequired)
             {
@@ -77,10 +77,10 @@ namespace PWMIS.OAuth2.Tools
                     }
                 }
             }
-            
+
         }
 
-        private HttpClient getSessionHttpClient(HttpRequestMessage request,string host)
+        private HttpClient getSessionHttpClient(HttpRequestMessage request, string host)
         {
             CookieContainer cc = new CookieContainer();
             HttpClientHandler handler = new HttpClientHandler();
@@ -88,7 +88,7 @@ namespace PWMIS.OAuth2.Tools
             handler.UseCookies = true;
 
             HttpClient client = new HttpClient(handler);
-           
+
             //client.DefaultRequestHeaders.Connection.Add("keep-alive");
             //dictHttpClient.Add(key, client);
 
@@ -131,27 +131,28 @@ namespace PWMIS.OAuth2.Tools
         /// <summary>
         /// 获取或者设置代理服务配置
         /// </summary>
-        public ProxyConfig Config {
-            get 
+        public ProxyConfig Config
+        {
+            get
             {
                 if (_config == null)
                 {
-                   string filePath=  HttpContext.Current.Server.MapPath("/ProxyServer.config");
-                   if (!System.IO.File.Exists(filePath))
-                       throw new Exception("当前站点根目录下没有发现代理配置文件：ProxyServer.config");
+                    string filePath = HttpContext.Current.Server.MapPath("/ProxyServer.config");
+                    if (!System.IO.File.Exists(filePath))
+                        throw new Exception("当前站点根目录下没有发现代理配置文件：ProxyServer.config");
                     //每行 # 开头，表示注释内容，忽略
                     string[] configArr = System.IO.File.ReadAllLines(filePath);
-                    string[] configArr1= configArr.Where(p => !p.TrimStart(' ', '\t').StartsWith("#")).ToArray();
+                    string[] configArr1 = configArr.Where(p => !p.TrimStart(' ', '\t').StartsWith("#")).ToArray();
                     string configStr = string.Concat(configArr1);
                     //string configStr = System.IO.File.ReadAllText(filePath);
-                   _config = Newtonsoft.Json.JsonConvert.DeserializeObject<ProxyConfig>(configStr);
+                    _config = Newtonsoft.Json.JsonConvert.DeserializeObject<ProxyConfig>(configStr);
                 }
                 return _config;
             }
             set { _config = value; }
         }
 
-      
+
 
         /// <summary>  
         /// 拦截请求  
@@ -159,7 +160,7 @@ namespace PWMIS.OAuth2.Tools
         /// <param name="request">请求</param>  
         /// <param name="cancellationToken">用于发送取消操作信号</param>  
         /// <returns></returns>  
-        protected async override Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken)
+        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //获取URL参数  
             //NameValueCollection query = HttpUtility.ParseQueryString(request.RequestUri.Query);
@@ -184,15 +185,15 @@ namespace PWMIS.OAuth2.Tools
             //long exeMs = sw.ElapsedMilliseconds;
 
             //代理服务
-          
+
 
             bool matched = false;
             bool sessionRequired = false;
             string url = request.RequestUri.PathAndQuery;
-            Uri baseAddress=null;
+            Uri baseAddress = null;
             //处理代理规则
             foreach (var route in this.Config.RouteMaps)
-            { 
+            {
                 if (url.StartsWith(route.Prefix))
                 {
                     baseAddress = new Uri("http://" + route.Host + "/");
@@ -218,11 +219,11 @@ namespace PWMIS.OAuth2.Tools
             //url = url.Replace("[SessionID]", HttpContext.Current.Session.SessionID);
 
             //如果缓存没有，将继续处理
-            if (request.Headers.CacheControl!=null &&
+            if (request.Headers.CacheControl != null &&
                 request.Headers.CacheControl.Public &&
                 this.Config.EnableCache && ProxyCacheProcess != null)
             {
-                var response = ProxyCacheProcess(this,request);
+                var response = ProxyCacheProcess(this, request);
                 if (response == null)
                 {
                     response = await GetNewResponseMessage(request, url, baseAddress, sessionRequired);
@@ -279,41 +280,60 @@ namespace PWMIS.OAuth2.Tools
                 return await ProxyReuqest(request, url, client);
             }
 
+
             //处理代理的服务器变量：
             //url = url.Replace("[UserName]", identity.Name);
-
-            using (TokenManager tm = new TokenManager(identity.Name, null))
+            //请求结果无权限，重新获取令牌，尝试3次
+            for (int i = 0; i < 3; i++)
             {
-                TokenResponse token = tm.TakeToken();
-                //存在客户端登录，但是服务器重启会话丢失的情况，这时候将无法取到令牌，
-                //这种情况下视为客户未登录，由资源服务器来决定该访问是否需要验证授权
-                //所以代理服务不直接抛出错误请求。
-                if (token == null)
+                using (TokenManager tm = new TokenManager(identity.Name, null))
                 {
-                    if (this.Config.EnableRequestLog)
+                    //重试的时候，强制刷新令牌
+                    if(i>0) tm.NeedRefresh = true; 
+                    TokenResponse token = tm.TakeToken();
+                    //存在客户端登录，但是服务器重启会话丢失的情况，这时候将无法取到令牌，
+                    //这种情况下视为客户未登录，由资源服务器来决定该访问是否需要验证授权
+                    //所以代理服务不直接抛出错误请求。
+                    if (token == null)
                     {
-                        string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Old-Token:{5}\r\n  Statue:{6} \r\n  ExctionMessage:{7}\r\n",
-                            DateTime.Now.ToLongTimeString(),
-                            request.Method.ToString(), request.RequestUri.ToString(),
-                            client.BaseAddress.ToString(), url,
-                            tm.OldToken==null? "[OldToken=null]" : tm.OldToken.AccessToken,
-                            "TokenGainFailure",
-                            tm.TokenExctionMessage
-                            );
+                        string userHostAddress = HttpContext.Current.Request.UserHostAddress;
+                        if (this.Config.EnableRequestLog)
+                        {
+                            string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Old-Token:{6}\r\n  Statue:{7} \r\n  ExctionMessage:{8}\r\n",
+                                DateTime.Now.ToLongTimeString(),
+                                userHostAddress,
+                                request.Method.ToString(), request.RequestUri.ToString(),
+                                client.BaseAddress.ToString(), url,
+                                tm.OldToken == null ? "[OldToken=null]" : tm.OldToken.AccessToken,
+                                "TokenGainFailure",
+                                tm.TokenExctionMessage
+                                );
 
-                        WriteLogFile(logTxt);
+                            WriteLogFile(logTxt);
+                        }
+                        if (tm.TokenExctionMessage == "UserNoToken")
+                            return await ProxyReuqest(request, url, client);
+                        else
+                            return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.Unauthorized);
                     }
-                    if(tm.TokenExctionMessage== "UserNoToken")
-                        return await ProxyReuqest(request, url, client);
                     else
-                        return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.BadRequest);
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                        var result = await ProxyReuqest(request, url, client);
+                        if (result.StatusCode != HttpStatusCode.Unauthorized)
+                        {
+                            return result;
+                        }
+                        else
+                        {
+                            WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
+                            client = GetHttpClient(baseAddress, request, true);
+                        }
+                    }
                 }
-                else
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                    return await ProxyReuqest(request, url, client);
-                }
-            }
+            }//end for
+
+            return SendError("已经3次尝试使用令牌访问资源服务器，仍然被拒绝授权访问。", HttpStatusCode.Unauthorized); ;
         }
 
         private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpClient client)
@@ -322,9 +342,11 @@ namespace PWMIS.OAuth2.Tools
             string allLogText = "";
             if (this.Config.EnableRequestLog)
             {
+                string userHostAddress = HttpContext.Current.Request.UserHostAddress;
                 string token = client.DefaultRequestHeaders.Authorization == null ? "" : client.DefaultRequestHeaders.Authorization.ToString();
-                string logTxt = string.Format("Begin Time:{0} ,\r\n  Request-Url:{1} {2} ,\r\n  Map-Url:{3} {4} ,\r\n  Token:{5}\r\n  ",
+                string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Token:{6}\r\n  ",
                     DateTime.Now.ToLongTimeString(),
+                    userHostAddress,
                     request.Method.ToString(), request.RequestUri.ToString(),
                     client.BaseAddress.ToString(), url,
                     token
@@ -361,7 +383,7 @@ namespace PWMIS.OAuth2.Tools
 
             if (this.Config.EnableRequestLog)
             {
-              
+
                 string logTxt = string.Format("End Time:{0} ,\r\n  Statue:{1} ,\r\n  Elapsed(ms):{2} \r\n",
                     DateTime.Now.ToLongTimeString(),
                     //request.Method.ToString(), request.RequestUri.ToString(),
@@ -371,7 +393,8 @@ namespace PWMIS.OAuth2.Tools
                     );
                 if (result.StatusCode != HttpStatusCode.OK)
                 {
-                    logTxt += "\r\n Error Text:" + result.Content.ReadAsStringAsync().Result;
+                    string contentMsg = result.StatusCode == HttpStatusCode.Unauthorized ? "HTTP Error 401.0 - Unauthorized" : result.Content.ReadAsStringAsync().Result;
+                    logTxt += "\r\n Error Text:" + contentMsg;
                     logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------\r\n";
 
                 }
@@ -429,5 +452,5 @@ namespace PWMIS.OAuth2.Tools
             response.StatusCode = code;
             return response;
         }
-    }  
+    }
 }

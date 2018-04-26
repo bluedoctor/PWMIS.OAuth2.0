@@ -17,7 +17,7 @@ namespace Demo.OAuth2.WebApi
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-            ConfigureOAuth(app);
+            //ConfigureOAuth(app);
 
             WebApiConfig.Register(config);
             config.MessageHandlers.Add(new AuthenticationHandler());
@@ -30,7 +30,7 @@ namespace Demo.OAuth2.WebApi
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
                 AllowInsecureHttp = true,
-                TokenEndpointPath = new PathString("/token"),
+                TokenEndpointPath = new PathString("/api/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new SimpleAuthorizationServerProvider()
             };
