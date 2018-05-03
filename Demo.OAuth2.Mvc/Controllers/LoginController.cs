@@ -29,16 +29,24 @@ namespace Demo.OAuth2.Mvc.Controllers
             string vcode = HttpContext.Cache[cache_key] == null ? "" : HttpContext.Cache[cache_key].ToString();
             */
             LoginResultModel result = new LoginResultModel();
-           
-            if (!string.IsNullOrEmpty(loginModel.ValidationCode) && loginModel.ValidationCode == vcode)
-            {
-                result.UserName = loginModel.UserName;
-                result.ID = loginModel.ID;
 
+            if (!string.IsNullOrEmpty(loginModel.ValidationCode))
+            {
+                if (loginModel.ValidationCode == vcode)
+                {
+                    result.UserName = loginModel.UserName;
+                    result.ID = loginModel.ID;
+
+                }
+                else
+                {
+                    result.ErrorMessage = "验证码错误";
+                }
             }
             else
             {
-                result.ErrorMessage = "验证码错误";
+                result.UserName = loginModel.UserName;
+                result.ID = loginModel.ID;
             }
             
             return Json(result);

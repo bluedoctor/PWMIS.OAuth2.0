@@ -38,9 +38,7 @@ namespace PWMIS.OAuth2.Tools
 
         static ProxyRequestHandler()
         {
-            //定期清除DNS缓存
-            var sp = ServicePointManager.FindServicePoint(new Uri("http://foo.bar"));
-            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
+            ServicePointManager.DefaultConnectionLimit = 512;
         }
 
         private HttpClient GetHttpClient(Uri baseAddress, HttpRequestMessage request, bool sessionRequired)
@@ -72,6 +70,9 @@ namespace PWMIS.OAuth2.Tools
                             var client = getNoneSessionHttpClient(request, baseAddress.Host);
                             setHttpClientHeader(client, baseAddress, request);
                             dictHttpClient.Add(key, client);
+                            //定期清除DNS缓存
+                            var sp = ServicePointManager.FindServicePoint(baseAddress);
+                            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 分钟
                             return client;
                         }
                     }
