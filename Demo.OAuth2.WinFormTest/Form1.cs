@@ -118,6 +118,37 @@ namespace Demo.OAuth2.WinFormTest
             await oAuthCenterClient.OpenUrlByBrowser(this.txtUseName.Text, this.txtUrl.Text);
         }
 
-       
+        private  void btnBatchTest_Click(object sender, EventArgs e)
+        {
+            List<Task< HttpStatusCode >> list = new List<Task<HttpStatusCode>>();
+            for (int i = 0; i < 100; i++)
+            {
+                Task< HttpStatusCode> t =  Task<HttpStatusCode>.Run(() => TestAPI() );
+                list.Add(t);
+               
+            }
+            Task.WaitAll(list.ToArray());
+            MessageBox.Show("测试完成");
+        }
+
+        private async Task<HttpStatusCode> TestAPI()
+        {
+            var response = await this.client.GetAsync(this.txtUrl.Text);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                try
+                {
+                    string errMsg = string.Format("HTTP响应码：{0}，错误信息：{1}", response.StatusCode, (await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
+                    MessageBox.Show(errMsg);
+                }
+                catch
+                {
+                    MessageBox.Show(response.StatusCode.ToString());
+                }
+
+            }
+            return response.StatusCode;
+        }
+
     }
 }

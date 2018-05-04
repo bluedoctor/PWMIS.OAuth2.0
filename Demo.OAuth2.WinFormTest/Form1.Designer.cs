@@ -40,6 +40,7 @@
             this.txtOpenIE = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.ckbUserLogin = new System.Windows.Forms.CheckBox();
+            this.btnBatchTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -151,11 +152,22 @@
             this.ckbUserLogin.Text = "使用用户登录凭据";
             this.ckbUserLogin.UseVisualStyleBackColor = true;
             // 
+            // btnBatchTest
+            // 
+            this.btnBatchTest.Location = new System.Drawing.Point(455, 382);
+            this.btnBatchTest.Name = "btnBatchTest";
+            this.btnBatchTest.Size = new System.Drawing.Size(95, 33);
+            this.btnBatchTest.TabIndex = 12;
+            this.btnBatchTest.Text = "批量测试";
+            this.btnBatchTest.UseVisualStyleBackColor = true;
+            this.btnBatchTest.Click += new System.EventHandler(this.btnBatchTest_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 507);
+            this.Controls.Add(this.btnBatchTest);
             this.Controls.Add(this.ckbUserLogin);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtOpenIE);
@@ -190,6 +202,7 @@
         private System.Windows.Forms.Button txtOpenIE;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox ckbUserLogin;
+        private System.Windows.Forms.Button btnBatchTest;
     }
 }
 

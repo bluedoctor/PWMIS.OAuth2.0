@@ -321,14 +321,14 @@ namespace PWMIS.OAuth2.Tools
                     {
                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
                         var result = await ProxyReuqest(request, url, client);
-                        if (result.StatusCode != HttpStatusCode.Unauthorized)
-                        {
-                            return result;
-                        }
-                        else
+                        if (result.StatusCode == HttpStatusCode.Unauthorized)
                         {
                             WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
                             client = GetHttpClient(baseAddress, request, true);
+                        }
+                        else
+                        {
+                            return result;
                         }
                     }
                 }

@@ -14,6 +14,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter
     public class OpenRefreshTokenProvider : AuthenticationTokenProvider
     {
         private static ConcurrentDictionary<string, string> _refreshTokens = new ConcurrentDictionary<string, string>();
+        private static Random ticketRandom = new Random();
 
         /// <summary>
         /// 生成 refresh_token
@@ -23,7 +24,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter
             context.Ticket.Properties.IssuedUtc = DateTime.UtcNow;
             context.Ticket.Properties.ExpiresUtc = DateTime.UtcNow.AddDays(60);
 
-            context.SetToken(Guid.NewGuid().ToString("n") + Guid.NewGuid().ToString("n"));
+            context.SetToken(DateTime.Now.ToString("HHmmssfff")+ ticketRandom.Next(100000,1000000) + Guid.NewGuid().ToString("n"));
             _refreshTokens[context.Token] = context.SerializeTicket();
         }
 
