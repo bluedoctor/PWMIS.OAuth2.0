@@ -20,6 +20,8 @@ namespace Demo.OAuth2.WinFormTest
     {
         private OAuthClient oAuthCenterClient;
         private HttpClient client;
+        private bool HasError;
+        private string ErrorMessages;
         public Form1()
         {
             InitializeComponent();
@@ -120,15 +122,44 @@ namespace Demo.OAuth2.WinFormTest
 
         private  void btnBatchTest_Click(object sender, EventArgs e)
         {
-            List<Task< HttpStatusCode >> list = new List<Task<HttpStatusCode>>();
-            for (int i = 0; i < 100; i++)
+            int paraNum;
+            int ReqCount;
+            if (!int.TryParse(this.txtParaNum.Text, out paraNum))
             {
-                Task< HttpStatusCode> t =  Task<HttpStatusCode>.Run(() => TestAPI() );
-                list.Add(t);
-               
+                MessageBox.Show("请输入正确的数字！");
+                return;
             }
-            Task.WaitAll(list.ToArray());
-            MessageBox.Show("测试完成");
+            if (!int.TryParse(this.txtReqCount.Text, out ReqCount))
+            {
+                MessageBox.Show("请输入正确的数字！");
+                return;
+            }
+            if (paraNum < 1 || ReqCount < 1)
+            {
+                MessageBox.Show("请输入正确的数字！");
+                return;
+            }
+            HasError = false;
+            ErrorMessages = "";
+            System.Diagnostics.Stopwatch sw = new Stopwatch();
+            sw.Start();
+            for (int j = 0; j < ReqCount; j++)
+            {
+                List<Task<HttpStatusCode>> list = new List<Task<HttpStatusCode>>();
+                for (int i = 0; i < paraNum; i++)
+                {
+                    Task<HttpStatusCode> t = Task<HttpStatusCode>.Run(() => TestAPI());
+                    list.Add(t);
+
+                }
+                Task.WaitAll(list.ToArray());
+            }
+           
+            sw.Stop();
+            long tps = 1000 * (paraNum * ReqCount) / sw.ElapsedMilliseconds;
+            txtPage.Text = ErrorMessages;
+            MessageBox.Show("测试完成，耗时(ms)："+sw.ElapsedMilliseconds+",TPS="+tps);
+
         }
 
         private async Task<HttpStatusCode> TestAPI()
@@ -139,11 +170,13 @@ namespace Demo.OAuth2.WinFormTest
                 try
                 {
                     string errMsg = string.Format("HTTP响应码：{0}，错误信息：{1}", response.StatusCode, (await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
-                    MessageBox.Show(errMsg);
+                    //MessageBox.Show(errMsg);
+                    ErrorMessages = "\r\n"+errMsg;
                 }
                 catch
                 {
-                    MessageBox.Show(response.StatusCode.ToString());
+                    //MessageBox.Show("HTTP响应码："+response.StatusCode.ToString());
+                    ErrorMessages = "\r\nHTTP响应码：" + response.StatusCode.ToString();
                 }
 
             }
