@@ -319,17 +319,26 @@ namespace PWMIS.OAuth2.Tools
                     }
                     else
                     {
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                        var result = await ProxyReuqest(request, url, client);
-                        if (result.StatusCode == HttpStatusCode.Unauthorized)
+                        try
                         {
-                            WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
+                            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                            var result = await ProxyReuqest(request, url, client);
+                            if (result.StatusCode == HttpStatusCode.Unauthorized)
+                            {
+                                WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
+                                client = GetHttpClient(baseAddress, request, true);
+                            }
+                            else
+                            {
+                                return result;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLogFile(string.Format("----Proxy Request Error:{0}，try request count{1} ----", ex.Message, i + 1));
                             client = GetHttpClient(baseAddress, request, true);
                         }
-                        else
-                        {
-                            return result;
-                        }
+                       
                     }
                 }
             }//end for

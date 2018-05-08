@@ -20,6 +20,27 @@ namespace PWMIS.OAuth2.Tools
     /// </remarks>
     public class AuthenticationHandler : DelegatingHandler 
     {
+        HttpClient _httpClient;
+        bool IsOne = true ;//是否使用单个HttpClient对象实例
+
+        public AuthenticationHandler()
+        {
+            _httpClient = InnerGetClient();
+            _httpClient.DefaultRequestHeaders.Connection.Add("keep-alive");
+        }
+
+        private HttpClient GetClient()
+        {
+            return IsOne ? _httpClient : InnerGetClient();
+        }
+
+        private HttpClient InnerGetClient()
+        {
+            HttpClient client = new HttpClient();
+            string Host_AuthCenter = System.Configuration.ConfigurationManager.AppSettings["OAuth2Server"];// "http://localhost:60186";
+            client.BaseAddress = new Uri(Host_AuthCenter);
+            return client;
+        }
         /*
          * 【认证处理程序】处理过程：
          * 1，客户端使用之前从【授权服务器】申请的访问令牌，访问【资源服务器】；
@@ -34,27 +55,33 @@ namespace PWMIS.OAuth2.Tools
             if (request.Headers.Authorization != null && request.Headers.Authorization.Parameter != null)
             {
                 string token = request.Headers.Authorization.Parameter;
-
-                string Host_AuthCenter = System.Configuration.ConfigurationManager.AppSettings["OAuth2Server"];// "http://localhost:60186";
-                HttpClient _httpClient = new HttpClient(); ;
-                _httpClient.BaseAddress = new Uri(Host_AuthCenter);
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                var response = await _httpClient.GetAsync("/api/AccessToken");//.Result;
-                if (response.StatusCode == HttpStatusCode.OK)
+                try
                 {
-                    string[] result = await response.Content.ReadAsAsync<string[]>();//.Result;
-                    ClaimsIdentity identity = new ClaimsIdentity(result[2]);
-                    identity.AddClaim(new Claim(ClaimTypes.Name, result[0]));
-                    ClaimsPrincipal principal = new ClaimsPrincipal(identity);
-                    HttpContext.Current.User = principal;
-                    //添加角色示例，更多信息，请参考 https://msdn.microsoft.com/zh-cn/library/5k850zwb(v=vs.80).aspx
-                    //string[] userRoles = ((RolePrincipal)User).GetRoles();
-                    //Roles.AddUserToRole("JoeWorden", "manager");
+                    HttpClient client = GetClient();
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    var response = await client.GetAsync("/api/AccessToken");//.Result;
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        string[] result = await response.Content.ReadAsAsync<string[]>();//.Result;
+                        ClaimsIdentity identity = new ClaimsIdentity(result[2]);
+                        identity.AddClaim(new Claim(ClaimTypes.Name, result[0]));
+                        ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+                        HttpContext.Current.User = principal;
+                        //添加角色示例，更多信息，请参考 https://msdn.microsoft.com/zh-cn/library/5k850zwb(v=vs.80).aspx
+                        //string[] userRoles = ((RolePrincipal)User).GetRoles();
+                        //Roles.AddUserToRole("JoeWorden", "manager");
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (Exception ex)
+                {
 
                 }
             }
-            
           
             return await base.SendAsync(request, cancellationToken);
         }

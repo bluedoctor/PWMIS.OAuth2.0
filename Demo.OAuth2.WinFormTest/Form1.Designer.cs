@@ -45,6 +45,7 @@
             this.txtParaNum = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtReqCount = new System.Windows.Forms.TextBox();
+            this.ckbLogin = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -200,11 +201,24 @@
             this.txtReqCount.TabIndex = 16;
             this.txtReqCount.Text = "10";
             // 
+            // ckbLogin
+            // 
+            this.ckbLogin.AutoSize = true;
+            this.ckbLogin.Checked = true;
+            this.ckbLogin.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckbLogin.Location = new System.Drawing.Point(590, 391);
+            this.ckbLogin.Name = "ckbLogin";
+            this.ckbLogin.Size = new System.Drawing.Size(156, 16);
+            this.ckbLogin.TabIndex = 17;
+            this.ckbLogin.Text = "每请求10次检查一次登录";
+            this.ckbLogin.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 507);
+            this.Controls.Add(this.ckbLogin);
             this.Controls.Add(this.txtReqCount);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtParaNum);
@@ -249,6 +263,7 @@
         private System.Windows.Forms.TextBox txtParaNum;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtReqCount;
+        private System.Windows.Forms.CheckBox ckbLogin;
     }
 }
 

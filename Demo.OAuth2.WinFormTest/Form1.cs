@@ -124,6 +124,7 @@ namespace Demo.OAuth2.WinFormTest
         {
             int paraNum;
             int ReqCount;
+            bool checkLogin = ckbLogin.Checked;
             if (!int.TryParse(this.txtParaNum.Text, out paraNum))
             {
                 MessageBox.Show("请输入正确的数字！");
@@ -141,6 +142,7 @@ namespace Demo.OAuth2.WinFormTest
             }
             HasError = false;
             ErrorMessages = "";
+            txtPage.Text = "正在测试...";
             System.Diagnostics.Stopwatch sw = new Stopwatch();
             sw.Start();
             for (int j = 0; j < ReqCount; j++)
@@ -149,9 +151,16 @@ namespace Demo.OAuth2.WinFormTest
                 for (int i = 0; i < paraNum; i++)
                 {
                     Task<HttpStatusCode> t = Task<HttpStatusCode>.Run(() => TestAPI());
+                    if (checkLogin && i % 10 == 0)
+                    {
+                        Task<HttpStatusCode> t2 = Task<HttpStatusCode>.Run(() => TestLogin());
+                        list.Add(t2);
+                    }
                     list.Add(t);
 
                 }
+                //测试API访问期间重登录
+               
                 Task.WaitAll(list.ToArray());
             }
            
@@ -181,6 +190,26 @@ namespace Demo.OAuth2.WinFormTest
 
             }
             return response.StatusCode;
+        }
+
+        private async Task<HttpStatusCode> TestLogin()
+        {
+            string userName = this.txtUseName.Text.Trim();
+            string password = this.txtPassword.Text;
+
+            var code= await oAuthCenterClient.WebLogin(userName, password, result =>
+            {
+                if (result.LogonMessage == "OK")
+                {
+                    //MessageBox.Show("登录成功！");
+                 
+                }
+                else
+                {
+                    MessageBox.Show("登录失败："+result.LogonMessage);
+                }
+            });
+            return code;
         }
 
     }

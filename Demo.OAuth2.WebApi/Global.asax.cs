@@ -16,7 +16,7 @@ namespace Demo.OAuth2.WebApi
         {
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new AuthenticationHandler());
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new AuthenticationHandler());
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
