@@ -34,6 +34,7 @@ namespace PWMIS.OAuth2.Tools
         {
             //注意：整个应用程序周期，ProxyRequestHandler 是一个单例，所以本类不能随意使用全局变量。
             dictHttpClient = new Dictionary<string, HttpClient>();
+            Logger.Instance.LogFilePath = this.Config.LogFilePath;
         }
 
         static ProxyRequestHandler()
@@ -278,7 +279,7 @@ namespace PWMIS.OAuth2.Tools
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
             {
-                return await ProxyReuqest(request, url, client);
+                return await ProxyReuqest(request, url, client,"[NULL]");
             }
 
 
@@ -313,7 +314,7 @@ namespace PWMIS.OAuth2.Tools
                             WriteLogFile(logTxt);
                         }
                         if (tm.TokenExctionMessage == "UserNoToken")
-                            return await ProxyReuqest(request, url, client);
+                            return await ProxyReuqest(request, url, client,tm.UserName);
                         else
                             return SendError("代理请求刷新令牌失败：" + tm.TokenExctionMessage, HttpStatusCode.Unauthorized);
                     }
@@ -322,7 +323,7 @@ namespace PWMIS.OAuth2.Tools
                         try
                         {
                             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                            var result = await ProxyReuqest(request, url, client);
+                            var result = await ProxyReuqest(request, url, client,tm.UserName);
                             if (result.StatusCode == HttpStatusCode.Unauthorized)
                             {
                                 WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
@@ -346,7 +347,7 @@ namespace PWMIS.OAuth2.Tools
             return SendError("已经3次尝试使用令牌访问资源服务器，仍然被拒绝授权访问。", HttpStatusCode.Unauthorized); ;
         }
 
-        private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpClient client)
+        private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpClient client,string userName)
         {
             HttpResponseMessage result = null;
             string allLogText = "";
@@ -354,12 +355,12 @@ namespace PWMIS.OAuth2.Tools
             {
                 string userHostAddress = HttpContext.Current.Request.UserHostAddress;
                 string token = client.DefaultRequestHeaders.Authorization == null ? "" : client.DefaultRequestHeaders.Authorization.ToString();
-                string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Token:{6}\r\n  ",
+                string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  User:{6} Token:{7}\r\n  ",
                     DateTime.Now.ToLongTimeString(),
                     userHostAddress,
                     request.Method.ToString(), request.RequestUri.ToString(),
                     client.BaseAddress.ToString(), url,
-                    token
+                    userName, token
                     );
 
                 //WriteLogFile(logTxt);
@@ -435,18 +436,7 @@ namespace PWMIS.OAuth2.Tools
 
         private void WriteLogFile(string logTxt)
         {
-            string fileName = string.Format("ProxyLog_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
-            string filePath = System.IO.Path.Combine(this.Config.LogFilePath, fileName);
-            try
-            {
-                if (!System.IO.Directory.Exists(this.Config.LogFilePath))
-                    System.IO.Directory.CreateDirectory(this.Config.LogFilePath);
-                System.IO.File.AppendAllText(filePath, logTxt);
-            }
-            catch
-            {
-
-            }
+            Logger.Instance.Write(logTxt);
         }
 
         /// <summary>  

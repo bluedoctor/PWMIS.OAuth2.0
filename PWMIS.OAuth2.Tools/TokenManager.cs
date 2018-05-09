@@ -87,14 +87,15 @@ namespace PWMIS.OAuth2.Tools
                 //this.CurrentTokenLock.EnterUpgradeableReadLock();
                 //Console.WriteLine("...EnterUpgradeableReadLock...,Thread ID:{0}",Thread.CurrentThread.ManagedThreadId);
                 this.OldToken = uti.Token;
+                int expiresSeconds = uti.Token.expires_in - 2;
 
                 //如果令牌超期，刷新令牌
-                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in || NeedRefresh)
+                if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= expiresSeconds || NeedRefresh)
                 {
                     lock (uti.SyncObject)
                     {
                         //防止线程重入，再次判断
-                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= uti.Token.expires_in || NeedRefresh)
+                        if (DateTime.Now.Subtract(uti.FirstUseTime).TotalSeconds >= expiresSeconds || NeedRefresh)
                         {
                             //等待之前的用户使用完令牌再刷新
                             while (uti.UseCount > 0)
