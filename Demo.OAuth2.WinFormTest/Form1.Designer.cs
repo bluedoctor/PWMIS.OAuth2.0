@@ -170,36 +170,36 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(459, 446);
+            this.label5.Location = new System.Drawing.Point(144, 451);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 12);
+            this.label5.Size = new System.Drawing.Size(359, 12);
             this.label5.TabIndex = 13;
-            this.label5.Text = "并发请求数：";
+            this.label5.Text = "并发请求数（请根据当前测试机CPU线程数合理设置，不要太大）：";
             // 
             // txtParaNum
             // 
-            this.txtParaNum.Location = new System.Drawing.Point(542, 442);
+            this.txtParaNum.Location = new System.Drawing.Point(509, 447);
             this.txtParaNum.Name = "txtParaNum";
             this.txtParaNum.Size = new System.Drawing.Size(55, 21);
             this.txtParaNum.TabIndex = 14;
-            this.txtParaNum.Text = "1000";
+            this.txtParaNum.Text = "10";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(626, 446);
+            this.label6.Location = new System.Drawing.Point(588, 451);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(65, 12);
+            this.label6.Size = new System.Drawing.Size(101, 12);
             this.label6.TabIndex = 15;
-            this.label6.Text = "请求次数：";
+            this.label6.Text = "每线程请求次数：";
             // 
             // txtReqCount
             // 
-            this.txtReqCount.Location = new System.Drawing.Point(697, 442);
+            this.txtReqCount.Location = new System.Drawing.Point(697, 447);
             this.txtReqCount.Name = "txtReqCount";
             this.txtReqCount.Size = new System.Drawing.Size(55, 21);
             this.txtReqCount.TabIndex = 16;
-            this.txtReqCount.Text = "10";
+            this.txtReqCount.Text = "100";
             // 
             // ckbLogin
             // 

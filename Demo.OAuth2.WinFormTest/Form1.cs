@@ -31,7 +31,7 @@ namespace Demo.OAuth2.WinFormTest
         {
             string userName = this.txtUseName.Text.Trim();
             string password = this.txtPassword.Text;
-           
+
             try
             {
                 await oAuthCenterClient.WebLogin(userName, password, result =>
@@ -60,7 +60,7 @@ namespace Demo.OAuth2.WinFormTest
             }
         }
 
-     
+
 
         private async void btnGo_Click(object sender, EventArgs e)
         {
@@ -120,7 +120,7 @@ namespace Demo.OAuth2.WinFormTest
             await oAuthCenterClient.OpenUrlByBrowser(this.txtUseName.Text, this.txtUrl.Text);
         }
 
-        private  void btnBatchTest_Click(object sender, EventArgs e)
+        private void btnBatchTest_Click(object sender, EventArgs e)
         {
             int paraNum;
             int ReqCount;
@@ -145,29 +145,32 @@ namespace Demo.OAuth2.WinFormTest
             txtPage.Text = "正在测试...";
             System.Diagnostics.Stopwatch sw = new Stopwatch();
             sw.Start();
-            for (int j = 0; j < ReqCount; j++)
-            {
-                List<Task<HttpStatusCode>> list = new List<Task<HttpStatusCode>>();
-                for (int i = 0; i < paraNum; i++)
-                {
-                    Task<HttpStatusCode> t = Task<HttpStatusCode>.Run(() => TestAPI());
-                    if (checkLogin && i % 10 == 0)
-                    {
-                        Task<HttpStatusCode> t2 = Task<HttpStatusCode>.Run(() => TestLogin());
-                        list.Add(t2);
-                    }
-                    list.Add(t);
 
+            List<Task<HttpStatusCode>> list = new List<Task<HttpStatusCode>>();
+            for (int i = 0; i < paraNum; i++)
+            {
+                Task<HttpStatusCode> t = Task<HttpStatusCode>.Run(() =>
+                {
+                    for (int j = 0; j < ReqCount-1; j++)
+                    {
+                        var r= TestAPI().Result;
+                    }
+                    return TestAPI();
                 }
-                //测试API访问期间重登录
-               
-                Task.WaitAll(list.ToArray());
+                );
+                if (checkLogin && i % 10 == 0)
+                {
+                    //测试API访问期间重登录
+                    Task<HttpStatusCode> t2 = Task<HttpStatusCode>.Run(() => TestLogin());
+                    list.Add(t2);
+                }
+                list.Add(t);
             }
-           
+            Task.WaitAll(list.ToArray());
             sw.Stop();
             long tps = 1000 * (paraNum * ReqCount) / sw.ElapsedMilliseconds;
             txtPage.Text = ErrorMessages;
-            MessageBox.Show("测试完成，耗时(ms)："+sw.ElapsedMilliseconds+",TPS="+tps);
+            MessageBox.Show("测试完成，耗时(ms)：" + sw.ElapsedMilliseconds + ",TPS=" + tps);
 
         }
 
@@ -180,7 +183,7 @@ namespace Demo.OAuth2.WinFormTest
                 {
                     string errMsg = string.Format("HTTP响应码：{0}，错误信息：{1}", response.StatusCode, (await response.Content.ReadAsAsync<HttpError>()).ExceptionMessage);
                     //MessageBox.Show(errMsg);
-                    ErrorMessages = "\r\n"+errMsg;
+                    ErrorMessages = "\r\n" + errMsg;
                 }
                 catch
                 {
@@ -197,18 +200,18 @@ namespace Demo.OAuth2.WinFormTest
             string userName = this.txtUseName.Text.Trim();
             string password = this.txtPassword.Text;
 
-            var code= await oAuthCenterClient.WebLogin(userName, password, result =>
-            {
-                if (result.LogonMessage == "OK")
-                {
+            var code = await oAuthCenterClient.WebLogin(userName, password, result =>
+             {
+                 if (result.LogonMessage == "OK")
+                 {
                     //MessageBox.Show("登录成功！");
-                 
+
                 }
-                else
-                {
-                    MessageBox.Show("登录失败："+result.LogonMessage);
-                }
-            });
+                 else
+                 {
+                     MessageBox.Show("登录失败：" + result.LogonMessage);
+                 }
+             });
             return code;
         }
 

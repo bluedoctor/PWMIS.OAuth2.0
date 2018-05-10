@@ -50,7 +50,7 @@ namespace PWMIS.OAuth2.Tools
                 if (checkSizeCount > 10)
                 {
                     var fileInfo = new FileInfo(filePath);
-                    if (fileInfo.Length > 1 * 1024 * 1024)
+                    if (fileInfo.Length > 5 * 1024 * 1024)
                     {
                         string bakFile = string.Format("{0}_{1}.{2}",
                            System.IO.Path.GetFileNameWithoutExtension(filePath),

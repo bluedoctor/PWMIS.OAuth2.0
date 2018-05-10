@@ -301,7 +301,7 @@ namespace PWMIS.OAuth2.Tools
                         string userHostAddress = HttpContext.Current.Request.UserHostAddress;
                         if (this.Config.EnableRequestLog)
                         {
-                            string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Old-Token:{6}\r\n  Statue:{7} \r\n  ExctionMessage:{8}\r\n",
+                            string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Old-Token:{6}\r\n  Statue:{7} \r\n  ExctionMessage:{8}",
                                 DateTime.Now.ToLongTimeString(),
                                 userHostAddress,
                                 request.Method.ToString(), request.RequestUri.ToString(),
@@ -356,7 +356,7 @@ namespace PWMIS.OAuth2.Tools
                 string userHostAddress = HttpContext.Current.Request.UserHostAddress;
                 string token = client.DefaultRequestHeaders.Authorization == null ? "" : client.DefaultRequestHeaders.Authorization.ToString();
                 string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  User:{6} Token:{7}\r\n  ",
-                    DateTime.Now.ToLongTimeString(),
+                    DateTime.Now.ToString("HH:mm:ss.fff"),
                     userHostAddress,
                     request.Method.ToString(), request.RequestUri.ToString(),
                     client.BaseAddress.ToString(), url,
@@ -395,8 +395,8 @@ namespace PWMIS.OAuth2.Tools
             if (this.Config.EnableRequestLog)
             {
 
-                string logTxt = string.Format("End Time:{0} ,\r\n  Statue:{1} ,\r\n  Elapsed(ms):{2} \r\n",
-                    DateTime.Now.ToLongTimeString(),
+                string logTxt = string.Format("End Time:{0} ,\r\n  Statue:{1} ,\r\n  Elapsed(ms):{2} ",
+                    DateTime.Now.ToString("HH:mm:ss.fff"),
                     //request.Method.ToString(), request.RequestUri.ToString(),
                     //client.BaseAddress.ToString(), url,
                     result.StatusCode.ToString(),
@@ -406,7 +406,7 @@ namespace PWMIS.OAuth2.Tools
                 {
                     string contentMsg = result.StatusCode == HttpStatusCode.Unauthorized ? "HTTP Error 401.0 - Unauthorized" : result.Content.ReadAsStringAsync().Result;
                     logTxt += "\r\n Error Text:" + contentMsg;
-                    logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------\r\n";
+                    logTxt += "\r\n Request Headers:" + client.DefaultRequestHeaders.ToString() + "---------End Error Messages-----------";
 
                 }
                 allLogText += logTxt;
@@ -436,7 +436,7 @@ namespace PWMIS.OAuth2.Tools
 
         private void WriteLogFile(string logTxt)
         {
-            Logger.Instance.Write(logTxt);
+            Logger.Instance.WriteLine(logTxt);
         }
 
         /// <summary>  
