@@ -27,6 +27,7 @@ namespace PWMIS.OAuth2.Tools
         {
             _httpClient = InnerGetClient();
             _httpClient.DefaultRequestHeaders.Connection.Add("keep-alive");
+            ServicePointManager.DefaultConnectionLimit = 512;
         }
 
         private HttpClient GetClient()
