@@ -71,12 +71,18 @@ namespace Demo.OAuth2.Port.Controllers
                 //使用下面一行代码，简化上面注释的代码
                 var resourceClient = oc.GetResourceClient(userToken);
                 //TokenRepository.SetUserToken( oc.CurrentToken);
-                var responseTwo = await resourceClient.GetAsync("/api/values");
+                var responseTwo = await resourceClient.GetAsync("/api/values?t="+DateTime.Now.ToFileTimeUtc());
                 if (responseTwo.StatusCode != HttpStatusCode.OK)
                 {
-                    ViewBag.Message = "访问WebAPI 失败。";
+                    ViewBag.Message = HttpContext.User.Identity.Name+ "-访问WebAPI 失败。HttpStatusCode:" + responseTwo.StatusCode;
+                    if (responseTwo.StatusCode == HttpStatusCode.Unauthorized)
+                       await oc.RefreshToken();
                 }
-                ViewBag.Message = await responseTwo.Content.ReadAsStringAsync();
+                else
+                {
+                    ViewBag.Message = await responseTwo.Content.ReadAsStringAsync();
+                }
+                ViewBag.Message = ViewBag.Message + ";"+tm.TokenExctionMessage;
             }
             return View();
         }

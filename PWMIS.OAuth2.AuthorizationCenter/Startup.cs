@@ -21,7 +21,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter
                 AuthenticationMode = AuthenticationMode.Active,
                 TokenEndpointPath = new PathString("/api/token"), //获取 access_token 授权服务请求地址
                 AuthorizeEndpointPath = new PathString("/authorize"), //获取 authorization_code 授权服务请求地址
-                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(60), //access_token 过期时间，默认10秒太短
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(600), //access_token 过期时间，默认10秒太短
 
                 Provider = new OpenAuthorizationServerProvider(), //access_token 相关授权服务
                 AuthorizationCodeProvider = new OpenAuthorizationCodeProvider(), //authorization_code 授权服务

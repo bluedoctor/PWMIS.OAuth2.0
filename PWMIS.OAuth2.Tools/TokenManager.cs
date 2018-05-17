@@ -79,6 +79,7 @@ namespace PWMIS.OAuth2.Tools
         /// <returns>如果没有或者获取令牌失败，返回空</returns>
         public TokenResponse TakeToken()
         {
+            this.TokenExctionMessage = "";
             if (dictUserToken.ContainsKey(this.UserName))
             {
                 UserTokenInfo uti = dictUserToken[this.UserName];
