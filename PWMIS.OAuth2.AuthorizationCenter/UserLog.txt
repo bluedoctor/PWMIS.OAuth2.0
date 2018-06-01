@@ -59,3 +59,5 @@
 2018-4-18 15:40:24 User :admin Web Login used time(ms):3789, ErrorMsg:
 2018-4-18 16:46:02 User :admin Web Login used time(ms):116, ErrorMsg:
 2018-4-18 17:00:44 User :admin Web Login used time(ms):122, ErrorMsg:
+2018-6-1 17:08:23 User :admin Web Login used time(ms):216, ErrorMsg:
+2018-6-1 17:12:43 User :admin Web Login used time(ms):189, ErrorMsg:

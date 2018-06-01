@@ -23,6 +23,7 @@ namespace Demo.OAuth2.WebApi
             config.MessageHandlers.Add(new AuthenticationHandler());
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(config);
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
         }
 
         public void ConfigureOAuth(IAppBuilder app)

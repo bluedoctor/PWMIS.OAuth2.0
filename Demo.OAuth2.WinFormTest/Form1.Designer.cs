@@ -127,6 +127,8 @@
             this.txtPage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtPage.Size = new System.Drawing.Size(495, 243);
             this.txtPage.TabIndex = 8;
+            this.txtPage.Text = "测试长时间执行的API，可以访问下面的地址：\r\nhttp://localhost:62424/api/Values/GetLongTimeData/3\r\n其中UR" +
+    "L地址中最后的数字位此API模拟执行的耗时，单位毫秒。\r\n\r\n注意：\r\n网关访问资源服务器的超时时间是120秒，所以这个模拟时间不要超过这个秒数。\r\n\r\n";
             // 
             // txtOpenIE
             // 

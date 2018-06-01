@@ -20,6 +20,7 @@ namespace Demo.OAuth2.WebApi2
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalConfiguration.Configuration.MessageHandlers.Add(new AuthenticationHandler());
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();//设置返回值统一为json  
         }
     }
 }

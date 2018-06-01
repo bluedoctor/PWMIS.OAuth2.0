@@ -21,7 +21,12 @@ namespace Demo.OAuth2.Port.App_Start
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
                 );
-             config.Routes.MapHttpRoute(
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi1",
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+                );
+            config.Routes.MapHttpRoute(
                 name: "MyApi",
                 routeTemplate: "api2/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }

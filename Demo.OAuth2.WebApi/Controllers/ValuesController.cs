@@ -31,6 +31,14 @@ namespace Demo.OAuth2.WebApi.Controllers
             return "Resource Server: value="+id;
         }
 
+        [HttpGet]
+        [Route("api/Values/GetLongTimeData/{second}")]
+        public string GetLongTimeData(int second)
+        {
+            System.Threading.Thread.Sleep(second);
+            return "Resource Server Sleep Second:" + second;
+        }
+
         // POST api/values
         public void Post([FromBody]string value)
         {

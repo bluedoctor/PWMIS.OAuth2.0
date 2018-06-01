@@ -118,7 +118,7 @@ namespace PWMIS.OAuth2.Tools
 
         private void setHttpClientHeader(HttpClient client, Uri baseAddress, HttpRequestMessage request)
         {
-            client.Timeout = new TimeSpan(0, 0, 30); //不易太长，Token只有10秒有效
+            client.Timeout = new TimeSpan(0, 2, 0); //Token会在资源服务器刚被请求的时候使用，跟Token失效时间无关
             client.BaseAddress = baseAddress;
             //复制请求头，转发请求
             foreach (var item in request.Headers)
