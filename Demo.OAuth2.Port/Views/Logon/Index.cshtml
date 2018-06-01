@@ -20,7 +20,14 @@
             dataType: "json",
             success: function (r) {
                 if (r.UserName == "" || r.UserName == null) {
-                    alert("登录错误：" + r.LogonMessage);
+                    var errMsg = "";
+                    var objMsg = JSON.parse( r.LogonMessage);
+                    if (objMsg.ErrorCode > 1002)
+                        errMsg = objMsg.ErrorMessage;
+                    else
+                        errMsg = objMsg.ErrorObject.HttpError.error_description;
+
+                    alert("登录错误：" + errMsg + ",错误代码：" + objMsg.ErrorCode);
                 } else {
 
                     alert(r.UserName + "登录成功！");

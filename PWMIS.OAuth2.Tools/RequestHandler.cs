@@ -191,6 +191,7 @@ namespace PWMIS.OAuth2.Tools
 
             bool matched = false;
             bool sessionRequired = false;
+            bool isAuthenticated = false;
             string url = request.RequestUri.PathAndQuery;
             Uri baseAddress = null;
             //处理代理规则
@@ -207,6 +208,8 @@ namespace PWMIS.OAuth2.Tools
                     matched = true;
                     if (route.SessionRequired)
                         sessionRequired = true;
+                    if (route.IsAuthenticated)
+                        isAuthenticated = true;
                     //break;
                     //只要不替换前缀，还可以继续匹配并且替换剩余部分
                 }
@@ -228,12 +231,12 @@ namespace PWMIS.OAuth2.Tools
                 var response = ProxyCacheProcess(this, request);
                 if (response == null)
                 {
-                    response = await GetNewResponseMessage(request, url, baseAddress, sessionRequired);
+                    response = await GetNewResponseMessage(request, url, baseAddress, sessionRequired, isAuthenticated);
                     SetRequestCache(url, response);
                 }
                 return response;
             }
-            return await GetNewResponseMessage(request, url, baseAddress, sessionRequired);
+            return await GetNewResponseMessage(request, url, baseAddress, sessionRequired, isAuthenticated);
         }
 
         #region 缓存相关
@@ -271,21 +274,49 @@ namespace PWMIS.OAuth2.Tools
         /// <param name="url"></param>
         /// <param name="baseAddress"></param>
         /// <param name="sessionRequired">是否需要会话支持</param>
+        /// <param name="isAuthenticated">当前请求必须是登录验证过的，默认不要求</param>
         /// <returns></returns>
-        private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress, bool sessionRequired)
+        private async Task<HttpResponseMessage> GetNewResponseMessage(HttpRequestMessage request, string url, Uri baseAddress, bool sessionRequired,bool isAuthenticated=false)
         {
+            string userHostAddress = HttpContext.Current.Request.UserHostAddress;
             HttpClient client = GetHttpClient(baseAddress, request, sessionRequired);
 
             var identity = HttpContext.Current.User.Identity;
             if (identity == null || identity.IsAuthenticated == false)
             {
-                return await ProxyReuqest(request, url, client,"[NULL]");
+                if (isAuthenticated)
+                {
+                    if (this.Config.EnableRequestLog)
+                    {
+                        string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  []:{6}  Statue:{7} \r\n  ExctionMessage:{8}",
+                              DateTime.Now.ToLongTimeString(),
+                              userHostAddress,
+                              request.Method.ToString(), request.RequestUri.ToString(),
+                              client.BaseAddress.ToString(), url,
+                              "[N/A]",
+                              "Unauthorized",
+                              "this url request need is authenticated."
+                              );
+
+                        WriteLogFile(logTxt);
+                    }
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
+                    response.Headers.Add("Proxy-Server", this.Config.ServerName);
+                    return response;
+                }
+                else
+                {
+                    return await ProxyReuqest(request, url, client, "[NULL]");
+                }
             }
 
 
             //处理代理的服务器变量：
             //url = url.Replace("[UserName]", identity.Name);
             //请求结果无权限，重新获取令牌，尝试3次
+            int unauthorizedCount = 0;
+            string errorMessage = "";
+
             for (int i = 0; i < 3; i++)
             {
                 using (TokenManager tm = new TokenManager(identity.Name, null))
@@ -298,7 +329,7 @@ namespace PWMIS.OAuth2.Tools
                     //所以代理服务不直接抛出错误请求。
                     if (token == null)
                     {
-                        string userHostAddress = HttpContext.Current.Request.UserHostAddress;
+                        
                         if (this.Config.EnableRequestLog)
                         {
                             string logTxt = string.Format("Begin Time:{0} ,\r\n  {1} Request-Url:{2} {3} ,\r\n  Map-Url:{4} {5} ,\r\n  Old-Token:{6}\r\n  Statue:{7} \r\n  ExctionMessage:{8}",
@@ -327,6 +358,7 @@ namespace PWMIS.OAuth2.Tools
                             if (result.StatusCode == HttpStatusCode.Unauthorized)
                             {
                                 WriteLogFile(string.Format("----未授权，尝试第{0}次访问----", i + 1));
+                                unauthorizedCount++;
                                 client = GetHttpClient(baseAddress, request, true);
                             }
                             else
@@ -336,15 +368,24 @@ namespace PWMIS.OAuth2.Tools
                         }
                         catch (Exception ex)
                         {
-                            WriteLogFile(string.Format("----Proxy Request Error:{0}，try request count{1} ----", ex.Message, i + 1));
-                            client = GetHttpClient(baseAddress, request, true);
+                            errorMessage = string.Format("----{0} Proxy Request Error:{1}，Request Url:{2} ----",
+                                DateTime.Now.ToString("HH:mm:ss.fff"), ex.Message, url);
+                            if (ex.InnerException != null)
+                                errorMessage += ex.InnerException.Message;
+
+                            WriteLogFile(errorMessage);
+                            WriteLogFile(ex.StackTrace);
+                            break;
                         }
                        
                     }
                 }
             }//end for
 
-            return SendError("已经3次尝试使用令牌访问资源服务器，仍然被拒绝授权访问。", HttpStatusCode.Unauthorized); ;
+            if (unauthorizedCount >= 3)
+                return SendError("已经3次尝试使用令牌访问资源服务器，仍然被拒绝授权访问。", HttpStatusCode.Unauthorized);
+            else
+                return SendError("访问资源服务器发生错误："+errorMessage, HttpStatusCode.InternalServerError);
         }
 
         private async Task<HttpResponseMessage> ProxyReuqest(HttpRequestMessage request, string url, HttpClient client,string userName)

@@ -76,6 +76,10 @@ namespace PWMIS.OAuth2.Tools
         /// 是否需要会话支持
         /// </summary>
         public bool SessionRequired { get; set; }
+        /// <summary>
+        /// 是否需要登录验证
+        /// </summary>
+        public bool IsAuthenticated { get; set; }
 
     }
 }

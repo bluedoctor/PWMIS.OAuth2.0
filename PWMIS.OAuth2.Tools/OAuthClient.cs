@@ -137,9 +137,9 @@ namespace PWMIS.OAuth2.Tools
                             string errMsg = "";
                             foreach (var item in error)
                             {
-                                errMsg += item.Key + ":\"" + (item.Value == null ? "" : item.Value.ToString()) + "\",";
+                                errMsg += "\""+item.Key + "\":\"" + (item.Value == null ? "" : item.Value.ToString()) + "\",";
                             }
-                            this.ExceptionMessage = "HttpError:{" + errMsg.TrimEnd(',')+"}";
+                            this.ExceptionMessage = "\"HttpError\":{" + errMsg.TrimEnd(',')+"}";
                         }
                         else
                         {
@@ -166,7 +166,7 @@ namespace PWMIS.OAuth2.Tools
                     }
 
                     WriteErrorLog(errCode, "StatusCode:" + response.StatusCode + "\r\n" + this.ExceptionMessage);
-                    this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorObject:{" + this.ExceptionMessage + "}}";
+                    this.ExceptionMessage = "{\"ErrorCode\":" + errCode + ",\"ErrorObject\":{" + this.ExceptionMessage + "}}";
                     return null;
                 }
                 return await response.Content.ReadAsAsync<TokenResponse>();
@@ -182,7 +182,7 @@ namespace PWMIS.OAuth2.Tools
                 errCode = "1003";
                 this.ExceptionMessage = errMsg;
                 WriteErrorLog(errCode, errMsg);
-                this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorMessage:'" + this.ExceptionMessage + "'}";
+                this.ExceptionMessage = "{\"ErrorCode\":" + errCode + ",\"ErrorMessage\":\"" + this.ExceptionMessage + "\"}";
                 return null;
             }
             catch (Exception ex)
@@ -190,7 +190,7 @@ namespace PWMIS.OAuth2.Tools
                 this.ExceptionMessage = ex.Message;
                 errCode = "1004";
                 WriteErrorLog(errCode, this.ExceptionMessage);
-                this.ExceptionMessage = "{ErrorCode:" + errCode + ",ErrorMessage:'" + this.ExceptionMessage + "'}";
+                this.ExceptionMessage = "{\"ErrorCode\":" + errCode + ",\"ErrorMessage\":\"" + this.ExceptionMessage + "\"}";
                 return null;
             }
         }
