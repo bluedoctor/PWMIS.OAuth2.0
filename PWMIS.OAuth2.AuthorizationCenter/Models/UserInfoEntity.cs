@@ -12,7 +12,7 @@ namespace PWMIS.OAuth2.AuthorizationCenter.Models
         {
             TableName = "UserInfo";
             IdentityName = "ID";
-
+            PrimaryKeys.Add("ID");
         }
 
         public int ID
