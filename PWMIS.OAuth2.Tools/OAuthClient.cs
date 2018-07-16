@@ -190,7 +190,7 @@ namespace PWMIS.OAuth2.Tools
                 this.ExceptionMessage = ex.Message;
                 errCode = "1004";
                 WriteErrorLog(errCode, this.ExceptionMessage);
-                this.ExceptionMessage = "{\"ErrorCode\":" + errCode + ",\"ErrorMessage\":\"" + this.ExceptionMessage + "\"}";
+                this.ExceptionMessage = "{\"ErrorCode\":" + errCode + ",\"ErrorMessage\":\"AuthorizationServer Error," + this.ExceptionMessage + "\"}";
                 return null;
             }
         }
